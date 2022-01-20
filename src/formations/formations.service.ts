@@ -15,27 +15,30 @@ export class FormationsService {
     return this.formationsRepository.find({});
   }
 
-  async insertFormation(
-    insertFormationDto: InsertFormationDto,
-  ): Promise<FormationsEntity> {
+  // @ts-ignore
+  async insertFormation(insertFormationDto: InsertFormationDto,): Promise<FormationsEntity> {
     const instance = this.formationsRepository.create(insertFormationDto);
 
-    this.formationsRepository.save(instance);
+    await this.formationsRepository.save(instance);
     await this.formationsRepository.save(insertFormationDto);
+    /*
     const newFormation = new FormationsEntity();
     newFormation.name = insertFormationDto.name;
     newFormation.description = insertFormationDto.description;
     newFormation.benefit = insertFormationDto.benefit;
     newFormation.duration = insertFormationDto.duration;
-    newFormation.images_url_stringified =
+    newFormation.imagesUrlStringified =
       insertFormationDto.images_url_stringified;
     newFormation.tags = insertFormationDto.tags;
-    newFormation.vat_price = insertFormationDto.vat_price;
-    newFormation.vat_amount = insertFormationDto.vat_price;
-    newFormation.duration_text = insertFormationDto.duration_text;
-    newFormation.is_active = insertFormationDto.is_active;
-    newFormation.vat_amount = insertFormationDto.vat_amount
+    newFormation.vatPrice = insertFormationDto.vat_price;
+    newFormation.vatAmount = insertFormationDto.vat_price;
+    newFormation.durationText = insertFormationDto.duration_text;
+    newFormation.isActive = insertFormationDto.is_active;
+    newFormation.vatAmount = insertFormationDto.vat_amount;
 
     return this.formationsRepository.save(newFormation);
+     */
+
+
   }
 }

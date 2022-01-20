@@ -1,37 +1,52 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { FormationsAvailabilities } from '../formations-availabilities/formationsAvailabilities.entity';
+import { FormationsSubscribers } from '../formations-subscribers/formations-subscribers.entity';
 
-@Entity({ name: 'formations' })
+@Index('formations_id_uindex', ['id'], { unique: true })
+@Entity('formations', { schema: 'bwozsqvguehemtybe0hq' })
 export class FormationsEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column()
+  @Column('varchar', { name: 'name', length: 200 })
   name: string;
 
-  @Column()
+  @Column('longtext', { name: 'description' })
   description: string;
 
-  @Column()
+  @Column('varchar', { name: 'benefit', length: 2000 })
   benefit: string;
 
-  @Column()
+  @Column('int', { name: 'duration' })
   duration: number;
 
-  @Column()
-  images_url_stringified: string;
+  @Column('varchar', { name: 'images_url_stringified', length: 1000 })
+  imagesUrlStringified: string;
 
-  @Column()
+  @Column('varchar', { name: 'tags', length: 1000 })
   tags: string;
 
-  @Column()
-  vat_price: number;
+  @Column('float', { name: 'vat_price', precision: 12 })
+  vatPrice: number;
 
-  @Column()
-  vat_amount: number;
+  @Column('float', { name: 'vat_amount', precision: 12 })
+  vatAmount: number;
 
-  @Column()
-  duration_text: string;
+  @Column('varchar', { name: 'duration_text', nullable: true, length: 1000 })
+  durationText: string | null;
 
-  @Column({ default: true })
-  is_active: boolean;
+  @Column('tinyint', { name: 'is_active', default: () => '1' })
+  isActive: boolean;
+
+  @OneToMany(
+    () => FormationsAvailabilities,
+    (formationsAvailabilities) => formationsAvailabilities.formation,
+  )
+  formationsAvailabilities: FormationsAvailabilities[];
+
+  @OneToMany(
+    () => FormationsSubscribers,
+    (formationsSubscribers) => formationsSubscribers.formation,
+  )
+  formationsSubscribers: FormationsSubscribers[];
 }
