@@ -1,17 +1,16 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { FormationsAvailabilities } from '../formations-availabilities/formationsAvailabilities.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { FormationsAvailabilities } from '../formations-availabilities/formations-availabilities.entity';
 import { FormationsSubscribers } from '../formations-subscribers/formations-subscribers.entity';
 
-@Index('formations_id_uindex', ['id'], { unique: true })
-@Entity('formations', { schema: 'bwozsqvguehemtybe0hq' })
-export class FormationsEntity {
+@Entity('formations')
+export class Formations {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
   @Column('varchar', { name: 'name', length: 200 })
   name: string;
 
-  @Column('longtext', { name: 'description' })
+  @Column('text', { name: 'description' })
   description: string;
 
   @Column('varchar', { name: 'benefit', length: 2000 })
@@ -26,17 +25,29 @@ export class FormationsEntity {
   @Column('varchar', { name: 'tags', length: 1000 })
   tags: string;
 
-  @Column('float', { name: 'vat_price', precision: 12 })
+  @Column({
+    name: 'vat_price',
+    type: 'decimal',
+    precision: 2,
+    default: 0.0,
+    nullable: false,
+  })
   vatPrice: number;
 
-  @Column('float', { name: 'vat_amount', precision: 12 })
+  @Column({
+    name: 'vat_amount',
+    type: 'decimal',
+    precision: 2,
+    default: 0.0,
+    nullable: false,
+  })
   vatAmount: number;
 
   @Column('varchar', { name: 'duration_text', nullable: true, length: 1000 })
-  durationText: string | null;
+  durationText: string;
 
-  @Column('tinyint', { name: 'is_active', default: () => '1' })
-  isActive: boolean;
+  @Column('boolean', { name: 'is_active', default: true })
+  isActive: number;
 
   @OneToMany(
     () => FormationsAvailabilities,

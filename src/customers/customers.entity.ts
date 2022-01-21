@@ -5,9 +5,7 @@ import { DiscountCodes } from '../discount-codes/discount-codes.entity';
 import { FormationsSubscribers } from '../formations-subscribers/formations-subscribers.entity';
 import { Newsletter } from '../newsletter/newsletter.entity';
 
-@Index('customers_id_uindex', ['id'], { unique: true })
-@Index('customers_pseudo_uindex', ['pseudo'], { unique: true })
-@Entity('customers', { schema: 'bwozsqvguehemtybe0hq' })
+@Entity('customers')
 export class Customers {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
@@ -16,40 +14,40 @@ export class Customers {
   email: string;
 
   @Column('varchar', { name: 'last_name', nullable: true, length: 50 })
-  lastName: string | null;
+  lastName: string ;
 
   @Column('varchar', { name: 'first_name', nullable: true, length: 50 })
-  firstName: string | null;
+  firstName: string ;
 
   @Column('varchar', { name: 'phone', nullable: true, length: 15 })
-  phone: string | null;
+  phone: string ;
 
   @Column('varchar', { name: 'stripe_customer_id', nullable: true, length: 50 })
-  stripeCustomerId: string | null;
+  stripeCustomerId: string ;
 
   @Column('varchar', { name: 'delivery_address', nullable: true, length: 100 })
-  deliveryAddress: string | null;
+  deliveryAddress: string ;
 
   @Column('varchar', { name: 'delivery_city', nullable: true, length: 100 })
-  deliveryCity: string | null;
+  deliveryCity: string ;
 
   @Column('varchar', { name: 'delivery_zipcode', nullable: true, length: 7 })
-  deliveryZipcode: string | null;
+  deliveryZipcode: string ;
 
   @Column('varchar', { name: 'delivery_country', nullable: true, length: 50 })
-  deliveryCountry: string | null;
+  deliveryCountry: string ;
 
   @Column('varchar', { name: 'billing_address', nullable: true, length: 100 })
-  billingAddress: string | null;
+  billingAddress: string ;
 
   @Column('varchar', { name: 'billing_city', nullable: true, length: 100 })
-  billingCity: string | null;
+  billingCity: string ;
 
   @Column('varchar', { name: 'billing_zipcode', nullable: true, length: 7 })
-  billingZipcode: string | null;
+  billingZipcode: string ;
 
   @Column('varchar', { name: 'billing_country', nullable: true, length: 50 })
-  billingCountry: string | null;
+  billingCountry: string ;
 
   @Column('varchar', {
     name: 'pseudo',
@@ -57,7 +55,7 @@ export class Customers {
     unique: true,
     length: 10,
   })
-  pseudo: string | null;
+  pseudo: string ;
 
   @OneToMany(() => CustomerOrders, (customerOrders) => customerOrders.customer)
   customerOrders: CustomerOrders[];

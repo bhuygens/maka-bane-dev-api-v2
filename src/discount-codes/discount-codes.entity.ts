@@ -1,12 +1,8 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Customers } from '../customers/customers.entity';
 import { Products } from '../products/products.entity';
 
-@Index('discount_codes_code_uindex', ['code'], { unique: true })
-@Index('discount_codes_customers_id_fk', ['customerId'], {})
-@Index('discount_codes_id_uindex', ['id'], { unique: true })
-@Index('discount_codes_products_id_fk', ['productId'], {})
-@Entity('discount_codes', { schema: 'bwozsqvguehemtybe0hq' })
+@Entity('discount_codes')
 export class DiscountCodes {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
@@ -18,16 +14,22 @@ export class DiscountCodes {
   remainingUse: number;
 
   @Column('int', { name: 'customer_id', nullable: true })
-  customerId: number | null;
+  customerId: number;
 
   @Column('int', { name: 'product_id', nullable: true })
-  productId: number | null;
+  productId: number;
 
-  @Column('float', { name: 'direct_code', nullable: true, precision: 12 })
-  directCode: number | null;
+  @Column({
+    name: 'direct_code',
+    type: 'decimal',
+    precision: 2,
+    default: 0.0,
+    nullable: false,
+  })
+  directCode: number;
 
   @Column('int', { name: 'percent_code', nullable: true })
-  percentCode: number | null;
+  percentCode: number;
 
   @Column('varchar', { name: 'type', length: 10 })
   type: string;

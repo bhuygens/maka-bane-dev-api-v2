@@ -1,8 +1,7 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Customers } from '../customers/customers.entity';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('customer_pre_orders')
-export class CustomerPreOrders {
+@Entity('customer_orders_abort')
+export class CustomerOrdersAbort {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
@@ -33,10 +32,6 @@ export class CustomerPreOrders {
   @Column('text', { name: 'paymentIntentId', nullable: true })
   paymentIntentId: string;
 
-  @ManyToOne(() => Customers, (customers) => customers.customerPreOrders, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'customer_id', referencedColumnName: 'id' }])
-  customer: Customers;
+  @Column('text', { name: 'errorMessage', nullable: true })
+  errorMessage: string;
 }

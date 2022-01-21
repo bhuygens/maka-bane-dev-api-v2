@@ -1,22 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FormationsEntity } from './formations.entity';
+import { Formations } from './formations.entity';
 import { Repository } from 'typeorm';
 import { InsertFormationDto } from './dto/insertFormation.dto';
 
 @Injectable()
 export class FormationsService {
   constructor(
-    @InjectRepository(FormationsEntity)
-    private readonly formationsRepository: Repository<FormationsEntity>,
+    @InjectRepository(Formations)
+    private readonly formationsRepository: Repository<Formations>,
   ) {}
 
-  getAllFormations(): Promise<FormationsEntity[]> {
+  getAllFormations(): Promise<Formations[]> {
     return this.formationsRepository.find({});
   }
 
   // @ts-ignore
-  async insertFormation(insertFormationDto: InsertFormationDto,): Promise<FormationsEntity> {
+  async insertFormation(insertFormationDto: InsertFormationDto,): Promise<Formations> {
     const instance = this.formationsRepository.create(insertFormationDto);
 
     await this.formationsRepository.save(instance);

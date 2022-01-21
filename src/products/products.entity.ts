@@ -1,12 +1,10 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { DiscountCodes } from '../discount-codes/discount-codes.entity';
-import { ProductStock } from './ProductStock';
-import { ProductCategories } from './ProductCategories';
-import { Reviews } from './Reviews';
+import { ProductStock } from '../product-stock/product-stock.entity';
+import { ProductCategories } from '../product-categories/product-categories.entity';
+import { Reviews } from '../reviews/reviews.entity';
 
-@Index('products__product_categories_fk', ['categoryId'], {})
-@Index('products_id_uindex', ['id'], { unique: true })
-@Entity('products', { schema: 'bwozsqvguehemtybe0hq' })
+@Entity('products')
 export class Products {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
@@ -14,51 +12,69 @@ export class Products {
   @Column('varchar', { name: 'name', length: 250 })
   name: string;
 
-  @Column('float', { name: 'buying_price', precision: 12 })
+  @Column({
+    name: 'buying_price',
+    type: 'decimal',
+    precision: 2,
+    default: 0.0,
+    nullable: false,
+  })
   buyingPrice: number;
 
-  @Column('float', { name: 'retail_price', precision: 12 })
+  @Column({
+    name: 'retail_price',
+    type: 'decimal',
+    precision: 2,
+    default: 0.0,
+    nullable: false,
+  })
   retailPrice: number;
 
-  @Column('float', { name: 'vat_class', precision: 12 })
+  @Column({
+    name: 'vat_class',
+    type: 'decimal',
+    precision: 2,
+    default: 0.0,
+    nullable: false,
+  })
   vatClass: number;
 
   @Column('int', { name: 'category_id' })
   categoryId: number;
 
   @Column('int', { name: 'current_stock', nullable: true })
-  currentStock: number | null;
+  currentStock: number ;
 
-  @Column('longtext', { name: 'short_resume' })
+  @Column('text', { name: 'short_resume' })
   shortResume: string;
 
-  @Column('longtext', { name: 'benefit', nullable: true })
-  benefit: string | null;
+  @Column('text', { name: 'benefit', nullable: true })
+  benefit: string ;
 
   @Column('varchar', { name: 'tags', nullable: true, length: 250 })
-  tags: string | null;
+  tags: string ;
 
-  @Column('tinyint', { name: 'is_best_product', default: () => '\'0\'' })
+  @Column('boolean', { name: 'is_best_product', default: false })
   isBestProduct: number;
 
   @Column('varchar', { name: 'images_url', nullable: true, length: 1000 })
-  imagesUrl: string | null;
+  imagesUrl: string ;
 
-  @Column('tinyint', {
+  @Column('boolean', {
     name: 'has_product_declination',
     nullable: true,
-    default: () => '\'0\'',
+    default: false,
   })
-  hasProductDeclination: number | null;
+  hasProductDeclination: number ;
 
-  @Column('tinyint', { name: 'is_declination_product', default: () => '\'0\'' })
+  @Column('boolean', { name: 'is_declination_product', default: false })
   isDeclinationProduct: number;
 
   @Column('int', { name: 'main_product_id', nullable: true })
-  mainProductId: number | null;
+  mainProductId: number ;
 
-  @Column('mediumtext', { name: 'subType', nullable: true })
-  subType: string | null;
+  @Column('text', { name: 'subType', nullable: true })
+  subType: string ;
 
   @OneToMany(() => DiscountCodes, (discountCodes) => discountCodes.product)
   discountCodes: DiscountCodes[];

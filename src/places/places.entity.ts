@@ -1,10 +1,8 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { CaresAvailabilities } from './CaresAvailabilities';
-import { FormationsAvailabilities } from '../formations-availabilities/formationsAvailabilities.entity';
+import { CaresAvailabilities } from '../cares-availabilities/cares-availabilities.entity';
+import { FormationsAvailabilities } from '../formations-availabilities/formations-availabilities.entity';
 
-@Index('places_address_uindex', ['address'], { unique: true })
-@Index('places_id_uindex', ['id'], { unique: true })
-@Entity('places', { schema: 'bwozsqvguehemtybe0hq' })
+@Entity('places')
 export class Places {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;

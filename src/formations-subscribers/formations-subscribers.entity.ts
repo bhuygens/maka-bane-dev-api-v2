@@ -1,22 +1,15 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Customers } from '../customers/customers.entity';
-import { FormationsAvailabilities } from '../formations-availabilities/formationsAvailabilities.entity';
-import { FormationsEntity } from '../formations/formations.entity';
+import { FormationsAvailabilities } from '../formations-availabilities/formations-availabilities.entity';
+import { Formations } from '../formations/formations.entity';
 
-@Index('formations_subscribers_customers_id_fk', ['customerId'], {})
-@Index(
-  'formations_subscribers_formations_availabilities_id_fk',
-  ['formationAvailabilityId'],
-  {},
-)
-@Index('formations_subscribers_formations_id_fk', ['formationId'], {})
-@Entity('formations_subscribers', { schema: 'bwozsqvguehemtybe0hq' })
+@Entity('formations_subscribers')
 export class FormationsSubscribers {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column('longtext', { name: 'uuid', nullable: true })
-  uuid: string | null;
+  @Column('text', { name: 'uuid', nullable: true })
+  uuid: string;
 
   @Column('int', { name: 'customer_id' })
   customerId: number;
@@ -24,35 +17,41 @@ export class FormationsSubscribers {
   @Column('int', { name: 'formation_id' })
   formationId: number;
 
-  @Column('tinyint', { name: 'hasPaid_deposit', default: () => '0' })
+  @Column('boolean', { name: 'hasPaid_deposit', default: false })
   hasPaidDeposit: number;
 
-  @Column('tinyint', { name: 'hasPaid_whole', default: () => '0' })
+  @Column('boolean', { name: 'hasPaid_whole', default: false })
   hasPaidWhole: number;
 
-  @Column('longtext', { name: 'stripeIntent_deposit', nullable: true })
-  stripeIntentDeposit: string | null;
+  @Column('text', { name: 'stripeIntent_deposit', nullable: true })
+  stripeIntentDeposit: string;
 
   @Column('int', { name: 'formationAvailability_id' })
   formationAvailabilityId: number;
 
-  @Column('date', { name: 'deposit_date', nullable: true })
-  depositDate: string | null;
+  @Column('timestamptz', { name: 'deposit_date', nullable: true })
+  depositDate: Date;
 
-  @Column('float', { name: 'price', nullable: true, precision: 12 })
-  price: number | null;
+  @Column({
+    name: 'price',
+    type: 'decimal',
+    precision: 2,
+    default: 0.0,
+    nullable: false,
+  })
+  price: number;
 
   @Column('int', { name: 'numberPersons', nullable: true })
-  numberPersons: number | null;
+  numberPersons: number;
 
-  @Column('longtext', { name: 'paymentObject', nullable: true })
-  paymentObject: string | null;
+  @Column('text', { name: 'paymentObject', nullable: true })
+  paymentObject: string;
 
-  @Column('longtext', { name: 'error_message', nullable: true })
-  errorMessage: string | null;
+  @Column('text', { name: 'error_message', nullable: true })
+  errorMessage: string;
 
-  @Column('tinyint', { name: 'has_payment_failed', nullable: true })
-  hasPaymentFailed: number | null;
+  @Column('boolean', { name: 'has_payment_failed', default: false })
+  hasPaymentFailed: number;
 
   @ManyToOne(() => Customers, (customers) => customers.formationsSubscribers, {
     onDelete: 'NO ACTION',
@@ -73,10 +72,10 @@ export class FormationsSubscribers {
   formationAvailability: FormationsAvailabilities;
 
   @ManyToOne(
-    () => FormationsEntity,
+    () => Formations,
     (formations) => formations.formationsSubscribers,
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
   )
   @JoinColumn([{ name: 'formation_id', referencedColumnName: 'id' }])
-  formation: FormationsEntity;
+  formation: Formations;
 }

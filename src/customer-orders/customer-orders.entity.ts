@@ -1,46 +1,43 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Customers } from '../customers/customers.entity';
 
-@Index('customer_orders_customers_id_fk', ['customerId'], {})
-@Index('customer_orders_id_uindex', ['id'], { unique: true })
-@Entity('customer_orders', { schema: 'bwozsqvguehemtybe0hq' })
+@Entity('customer_orders')
 export class CustomerOrders {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column('date', { name: 'orderDate', nullable: true })
-  orderDate: string | null;
+  @Column('timestamptz', { name: 'orderDate', nullable: true })
+  orderDate: Date;
 
   @Column('int', { name: 'customer_id', nullable: true })
-  customerId: number | null;
+  customerId: number;
 
-  @Column('longtext', { name: 'order_data', nullable: true })
-  orderData: string | null;
+  @Column('text', { name: 'order_data', nullable: true })
+  orderData: string;
 
   @Column('int', { name: 'product_count', nullable: true })
-  productCount: number | null;
+  productCount: number;
 
-  @Column('float', {
+  @Column('decimal', {
     name: 'vat_included_price',
     nullable: true,
-    precision: 12,
   })
-  vatIncludedPrice: number | null;
+  vatIncludedPrice: number;
 
-  @Column('longtext', { name: 'uuid', nullable: true })
-  uuid: string | null;
+  @Column('text', { name: 'uuid', nullable: true })
+  uuid: string;
 
-  @Column('longtext', { name: 'tokenId', nullable: true })
-  tokenId: string | null;
+  @Column('text', { name: 'tokenId', nullable: true })
+  tokenId: string;
 
-  @Column('longtext', { name: 'paymentIntentId', nullable: true })
-  paymentIntentId: string | null;
+  @Column('text', { name: 'paymentIntentId', nullable: true })
+  paymentIntentId: string;
 
-  @Column('longtext', { name: 'invoice_url', nullable: true })
-  invoiceUrl: string | null;
+  @Column('text', { name: 'invoice_url', nullable: true })
+  invoiceUrl: string;
 
-  @Column('mediumtext', { name: 'cardOwner', nullable: true })
-  cardOwner: string | null;
+  @Column('text', { name: 'cardOwner', nullable: true })
+  cardOwner: string;
 
   @ManyToOne(() => Customers, (customers) => customers.customerOrders, {
     onDelete: 'NO ACTION',
