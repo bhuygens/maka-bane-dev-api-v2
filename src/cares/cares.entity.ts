@@ -31,8 +31,8 @@ export class Cares {
   @Column({
     name: 'vat_price',
     type: 'decimal',
-    precision: 2,
-    scale: 4,
+    precision: 12,
+    scale: 2,
     nullable: false,
   })
   vatPrice: number;
@@ -40,7 +40,8 @@ export class Cares {
   @Column({
     name: 'vat_amount',
     type: 'decimal',
-    precision: 2,
+    precision: 12,
+    scale: 2,
     nullable: false,
   })
   vatAmount: number;
