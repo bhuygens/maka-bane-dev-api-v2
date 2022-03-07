@@ -30,7 +30,7 @@ export class BlogCategoriesService {
     }
   }
 
-  async delete(id: string): Promise<BlogCategory> {
+  async delete(id: number): Promise<BlogCategory> {
     const articleCategory = await this.blogCategoryRepository.findOne(id);
     const articles = await this.blogArticlesRepository.find({
       category: articleCategory,
@@ -45,5 +45,10 @@ export class BlogCategoriesService {
     } else {
       return await this.blogCategoryRepository.remove(articleCategory);
     }
+  }
+
+  async getArticlesByCategoryId(id: number): Promise<BlogArticle[]> {
+    const category = await this.blogCategoryRepository.findOne(id);
+    return this.blogArticlesRepository.find({ category: category });
   }
 }

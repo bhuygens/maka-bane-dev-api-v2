@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import CreateBlogCategoryDto from './dto/create-blog-category.dto';
 import { BlogCategoriesService } from './blog-categories.service';
 
@@ -13,6 +21,11 @@ export class BlogCategoriesController {
 
   @Delete(':id')
   async deleteCategory(@Param('id') id: string) {
-    return this.blogCategoryService.delete(id);
+    return this.blogCategoryService.delete(+id);
+  }
+
+  @Get()
+  async getArticlesByCategoryId(@Query('category') category: string) {
+    return this.blogCategoryService.getArticlesByCategoryId(+category);
   }
 }

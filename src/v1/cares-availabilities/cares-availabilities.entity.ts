@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Cares } from '../cares/cares.entity';
 import { Places } from '../places/places.entity';
 
@@ -8,7 +8,7 @@ export class CaresAvailabilities {
   id: number;
 
   @Column('int', { name: 'care_id', nullable: true })
-  careId: number ;
+  careId: number;
 
   @Column('int', { name: 'place' })
   place: number;
