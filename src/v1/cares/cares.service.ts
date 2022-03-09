@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Cares } from './cares.entity';
 import { Repository } from 'typeorm';
 import { CaresAvailabilities } from '../cares-availabilities/cares-availabilities.entity';
-import CreateCareRequestDto from './dto/create-care-request.dto';
+import CreateCareDto from './dto/create-care.dto';
 import { FirebaseHelper } from '../../.common/helpers/firebase.helper';
 import ErrorManager from '../../.common/utils/ErrorManager';
+import UpdateCareDto from './dto/update-care-dto';
+import RequestManager from '../../.common/utils/RequestManager';
 
 @Injectable()
 export class CaresService {
@@ -30,7 +32,7 @@ export class CaresService {
     return await this.careAvailabilities.find({ care: care });
   }
 
-  async createCare(createCareDto: CreateCareRequestDto): Promise<any> {
+  async createCare(createCareDto: CreateCareDto): Promise<any> {
     // Get uploaded images urls
     const newImagesUrl = await FirebaseHelper.uploadImagesToFirebase(
       createCareDto.tempImages,
@@ -56,6 +58,35 @@ export class CaresService {
       return await this.caresRepository.save(care);
     } else {
       ErrorManager.alreadyExistContentException('Care names is already used');
+    }
+  }
+
+  async updateCare(updateCareDto: UpdateCareDto) {
+    // Find care
+    const care = await this.caresRepository.findOne(updateCareDto.id);
+
+    // Check if name isn't already used
+    await this.caresRepository
+      .find({
+        name: updateCareDto.name,
+      })
+      .then(
+        (res) =>
+          res.length > 0 && ErrorManager.customException(' Name already used'),
+      );
+
+    // Update care
+    if (care) {
+      const updatedCare = await this.caresRepository.preload({
+        id: +updateCareDto.id,
+        ...updateCareDto,
+      });
+      await this.caresRepository.save(updatedCare);
+      return RequestManager.successRequest(
+        `Care ${updateCareDto.id} updated !`,
+      );
+    } else {
+      ErrorManager.notFoundException(`Care ${updateCareDto.id} not found`);
     }
   }
 }

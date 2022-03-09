@@ -1,7 +1,7 @@
 import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 // DTO used before upload tempImages
-export default class CreateCareRequestDto {
+export default class CreateCareDto {
   @IsString()
   name: string;
 

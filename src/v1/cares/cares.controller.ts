@@ -1,6 +1,15 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CaresService } from './cares.service';
-import CreateCareRequestDto from './dto/create-care-request.dto';
+import CreateCareDto from './dto/create-care.dto';
+import UpdateCareDto from './dto/update-care-dto';
 
 @Controller('cares')
 export class CaresController {
@@ -22,7 +31,12 @@ export class CaresController {
   }
 
   @Post()
-  async createCare(@Body() createCareRequestDto: CreateCareRequestDto) {
+  async createCare(@Body() createCareRequestDto: CreateCareDto) {
     return await this.caresService.createCare(createCareRequestDto);
+  }
+
+  @Patch('update')
+  async updateCare(@Body() updateCareDto: UpdateCareDto) {
+    return await this.caresService.updateCare(updateCareDto);
   }
 }
