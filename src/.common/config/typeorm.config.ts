@@ -1,7 +1,4 @@
-import {
-  TypeOrmModuleAsyncOptions,
-  TypeOrmModuleOptions,
-} from '@nestjs/typeorm';
+import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 export default class TypeormConfig {
@@ -14,6 +11,7 @@ export default class TypeormConfig {
       password: 'lEozILeDfj2R7OArSd5p', // configService.get<string>('DB_PASS'),
       database: 'btlgaenyvp7aak8f9msy', // configService.get<string>('DB_NAME'),
       entities: ['dist/src/**/*.entity{.ts,.js}'],
+      // synchronize: true,
       // logging: true,
     };
   }

@@ -57,7 +57,7 @@ export class CaresService {
       const care = this.caresRepository.create(createCareDto);
       return await this.caresRepository.save(care);
     } else {
-      ErrorManager.alreadyExistContentException('Care names is already used');
+      ErrorManager.alreadyExistContentException('Care name is already used');
     }
   }
 
