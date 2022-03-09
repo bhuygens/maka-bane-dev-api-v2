@@ -27,12 +27,7 @@ export class BlogArticlesService {
 
     if (!isArticleExist) {
       const blogArticle = this.blogArticlesRepository.create({
-        contentHeader: createArticle.contentHeader,
-        category: blogCategory,
-        imagesUrl: createArticle.imagesUrl,
-        content: createArticle.content ? createArticle.content : '',
-        tags: createArticle.tags ? createArticle.tags : [],
-        title: createArticle.title,
+        ...createArticle,
         date: new Date(),
       });
       return this.blogArticlesRepository.save(blogArticle);

@@ -12,7 +12,11 @@ export default class ErrorManager {
     throw new HttpException(content, HttpStatus.CONFLICT);
   }
 
-  customException(content: string) {
+  static badRequestException(content: string) {
+    throw new HttpException(content, HttpStatus.BAD_REQUEST);
+  }
+
+  static customException(content: string) {
     throw new HttpException(content, 400);
   }
 }

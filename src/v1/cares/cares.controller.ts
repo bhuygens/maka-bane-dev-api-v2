@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CaresService } from './cares.service';
+import CreateCareRequestDto from './dto/create-care-request.dto';
 
 @Controller('cares')
 export class CaresController {
@@ -18,5 +19,10 @@ export class CaresController {
   @Get()
   async getCareAvailabilities(@Query('availability') id: string) {
     return await this.caresService.getCareAvailabilities(+id);
+  }
+
+  @Post()
+  async createCare(@Body() createCareRequestDto: CreateCareRequestDto) {
+    return await this.caresService.createCare(createCareRequestDto);
   }
 }
