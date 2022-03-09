@@ -1,7 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CaresAvailabilities } from '../cares-availabilities/cares-availabilities.entity';
 import { Reviews } from '../reviews/reviews.entity';
-import { IsOptional } from 'class-validator';
 
 @Entity('cares')
 export class Cares {
@@ -53,10 +52,10 @@ export class Cares {
 
   @OneToMany(
     () => CaresAvailabilities,
-    (caresAvailabilities) => caresAvailabilities.care,
+    (caresAvailabilities) => caresAvailabilities.care,{ eager: true },
   )
   caresAvailabilities: CaresAvailabilities[];
 
-  @OneToMany(() => Reviews, (reviews) => reviews.care)
+  @OneToMany(() => Reviews, (reviews) => reviews.care, { eager: true })
   reviews: Reviews[];
 }
