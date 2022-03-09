@@ -89,4 +89,34 @@ export class CaresService {
       ErrorManager.notFoundException(`Care ${updateCareDto.id} not found`);
     }
   }
+
+  async deleteCare(id: number) {
+    const care = await this.caresRepository.findOne(id);
+
+    if (care) {
+      // check if care availabilities are linked
+      const hasAvailabilitiesLinked = await this.careAvailabilities
+        .find({
+          care,
+        })
+        .then((res) => {
+          if (res.length > 0) {
+            ErrorManager.customException(
+              `Please delete availabilities before delete the care`,
+            );
+          } else {
+            return 0;
+          }
+        });
+
+      if (!hasAvailabilitiesLinked) {
+        await this.caresRepository.remove(care);
+        return RequestManager.successRequest(
+          `Care ${care.id} successfully removed`,
+        );
+      }
+    } else {
+      ErrorManager.notFoundException(`Care ${id} not found !`);
+    }
+  }
 }
