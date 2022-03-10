@@ -22,7 +22,7 @@ export class Cares {
   @Column('int', { name: 'duration' })
   duration: number;
 
-  @Column('varchar', { name: 'images_url_stringified', array: true })
+  @Column('varchar', { name: 'images_url', array: true })
   imagesUrl: string[];
 
   @Column('varchar', { name: 'tags', length: 1000, array: true })
@@ -47,7 +47,7 @@ export class Cares {
   })
   vatAmount: number;
 
-  @Column('varchar', { name: 'durationText', length: 1000 })
+  @Column('varchar', { name: 'duration_text', length: 1000 })
   durationText: string;
 
   @OneToMany(

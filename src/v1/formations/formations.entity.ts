@@ -19,7 +19,7 @@ export class Formations {
   @Column('int', { name: 'duration' })
   duration: number;
 
-  @Column('varchar', { name: 'images_url_stringified', length: 1000 })
+  @Column('varchar', { name: 'images_url', length: 1000 })
   imagesUrlStringified: string;
 
   @Column('varchar', { name: 'tags', length: 1000 })
