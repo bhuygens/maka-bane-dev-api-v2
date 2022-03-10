@@ -47,7 +47,7 @@ export class Cares {
   })
   vatAmount: number;
 
-  @Column('varchar', { name: 'duration_text', length: 1000 })
+  @Column('varchar', { name: 'durationText', length: 1000 })
   durationText: string;
 
   @OneToMany(
