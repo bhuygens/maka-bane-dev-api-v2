@@ -4,6 +4,6 @@ import { FormationsCategoriesController } from './formations-categories.controll
 
 @Module({
   providers: [FormationsCategoriesService],
-  controllers: [FormationsCategoriesController]
+  controllers: [FormationsCategoriesController],
 })
 export class FormationsCategoriesModule {}

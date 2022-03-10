@@ -1,4 +1,11 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Customers } from '../customers/customers.entity';
 
 @Entity('newsletter')
@@ -10,7 +17,7 @@ export class Newsletter {
   email: string;
 
   @Column('int', { name: 'customer_id', nullable: true })
-  customerId: number ;
+  customerId: number;
 
   @ManyToOne(() => Customers, (customers) => customers.newsletters)
   @JoinColumn([{ name: 'customer_id', referencedColumnName: 'id' }])

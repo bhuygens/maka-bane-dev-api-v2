@@ -28,7 +28,6 @@ export class CaresService {
 
   async getCareAvailabilities(id: number): Promise<CaresAvailabilities[]> {
     const care = await this.caresRepository.findOne(id);
-    console.log(care);
     return await this.careAvailabilities.find({ care: care });
   }
 

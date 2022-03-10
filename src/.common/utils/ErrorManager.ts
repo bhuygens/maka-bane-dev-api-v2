@@ -2,8 +2,6 @@ import { NotFoundError } from 'rxjs';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 export default class ErrorManager {
-
-
   static notFoundException(content: string) {
     throw new NotFoundError(content);
   }

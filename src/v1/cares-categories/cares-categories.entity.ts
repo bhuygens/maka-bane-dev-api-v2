@@ -9,5 +9,5 @@ export class CaresCategories {
   name: string;
 
   @Column('varchar', { name: 'description', nullable: true, length: 1000 })
-  description: string ;
+  description: string;
 }

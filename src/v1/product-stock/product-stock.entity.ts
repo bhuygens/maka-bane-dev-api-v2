@@ -1,4 +1,11 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Products } from '../products/products.entity';
 
 @Entity('product_stock')
@@ -13,13 +20,13 @@ export class ProductStock {
   quantity: number;
 
   @Column('timestamptz', { name: 'date', nullable: true })
-  date: Date ;
+  date: Date;
 
   @Column('text', { name: 'seller', nullable: true })
-  seller: string ;
+  seller: string;
 
   @Column('text', { name: 'orderId', nullable: true })
-  orderId: string ;
+  orderId: string;
 
   @ManyToOne(() => Products, (products) => products.productStocks)
   @JoinColumn([{ name: 'product_id', referencedColumnName: 'id' }])

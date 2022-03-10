@@ -42,7 +42,9 @@ import { CaresCategoriesService } from './v1/cares-categories/cares-categories.s
 import { CaresCategoriesController } from './v1/cares-categories/cares-categories.controller';
 import { CaresCategoriesModule } from './v1/cares-categories/cares-categories.module';
 import { FormationsCategoriesModule } from './v1/formations-categories/formations-categories.module';
-import { FormationsAvailabilitiesController } from './v1/formations-availabilities/formations-availabilities.controller';
+import {
+  FormationsAvailabilitiesController,
+} from './v1/formations-availabilities/formations-availabilities.controller';
 import { BlogArticle } from './v1/blog-articles/blog-articles.entity';
 import { BlogCategory } from './v1/blog-categories/blog-category.entity';
 import { Cares } from './v1/cares/cares.entity';
@@ -64,13 +66,18 @@ import { ProductCategories } from './v1/product-categories/product-categories.en
 import { ProductStock } from './v1/product-stock/product-stock.entity';
 import { Products } from './v1/products/products.entity';
 import { Reviews } from './v1/reviews/reviews.entity';
-import { typeOrmConfigAsync } from './.common/config/typeorm.config';
 import { BlogCategoriesService } from './v1/blog-categories/blog-categories.service';
+import { Connection, getConnectionOptions } from 'typeorm';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync(typeOrmConfigAsync),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => Object.assign(await getConnectionOptions(), {}),
+    }),
     TypeOrmModule.forFeature([
       BlogArticle,
       BlogCategory,
@@ -143,4 +150,11 @@ import { BlogCategoriesService } from './v1/blog-categories/blog-categories.serv
     CaresCategoriesController,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private connection: Connection) {
+    console.log(process.env.NODE_ENV);
+    console.log(process.env);
+    console.log('------');
+    console.log(connection.options);
+  }
+}

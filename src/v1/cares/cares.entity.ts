@@ -52,7 +52,8 @@ export class Cares {
 
   @OneToMany(
     () => CaresAvailabilities,
-    (caresAvailabilities) => caresAvailabilities.care,{ eager: true },
+    (caresAvailabilities) => caresAvailabilities.care,
+    { eager: true },
   )
   caresAvailabilities: CaresAvailabilities[];
 

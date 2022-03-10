@@ -5,13 +5,12 @@ import { Formations } from './formations.entity';
 
 @Controller('formations')
 export class FormationsController {
-  constructor(private readonly formationsService: FormationsService) {
-  }
+  constructor(private readonly formationsService: FormationsService) {}
 
   @Post('hello')
   getHello(
     @Body() insertFormationDto: InsertFormationDto,
-  ): Promise<Formations> {
+  ): Promise<void> {
     return this.formationsService.insertFormation(insertFormationDto);
   }
 

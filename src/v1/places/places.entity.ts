@@ -1,4 +1,10 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CaresAvailabilities } from '../cares-availabilities/cares-availabilities.entity';
 import { FormationsAvailabilities } from '../formations-availabilities/formations-availabilities.entity';
 

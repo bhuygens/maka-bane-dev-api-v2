@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Customers } from '../customers/customers.entity';
 import { FormationsAvailabilities } from '../formations-availabilities/formations-availabilities.entity';
 import { Formations } from '../formations/formations.entity';
@@ -67,10 +73,7 @@ export class FormationsSubscribers {
   ])
   formationAvailability: FormationsAvailabilities;
 
-  @ManyToOne(
-    () => Formations,
-    (formations) => formations.formationsSubscribers,
-  )
+  @ManyToOne(() => Formations, (formations) => formations.formationsSubscribers)
   @JoinColumn([{ name: 'formation_id', referencedColumnName: 'id' }])
   formation: Formations;
 }

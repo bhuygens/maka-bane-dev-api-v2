@@ -4,6 +4,6 @@ import { CaresAvailabilitiesService } from './cares-availabilities.service';
 
 @Module({
   controllers: [CaresAvailabilitiesController],
-  providers: [CaresAvailabilitiesService]
+  providers: [CaresAvailabilitiesService],
 })
 export class CaresAvailabilitiesModule {}

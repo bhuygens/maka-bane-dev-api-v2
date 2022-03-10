@@ -1,4 +1,10 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CustomerOrders } from '../customer-orders/customer-orders.entity';
 import { CustomerPreOrders } from '../customer-pre-orders/customer-pre-orders.entity';
 import { DiscountCodes } from '../discount-codes/discount-codes.entity';
@@ -14,40 +20,40 @@ export class Customers {
   email: string;
 
   @Column('varchar', { name: 'last_name', nullable: true, length: 50 })
-  lastName: string ;
+  lastName: string;
 
   @Column('varchar', { name: 'first_name', nullable: true, length: 50 })
-  firstName: string ;
+  firstName: string;
 
   @Column('varchar', { name: 'phone', nullable: true, length: 15 })
-  phone: string ;
+  phone: string;
 
   @Column('varchar', { name: 'stripe_customer_id', nullable: true, length: 50 })
-  stripeCustomerId: string ;
+  stripeCustomerId: string;
 
   @Column('varchar', { name: 'delivery_address', nullable: true, length: 100 })
-  deliveryAddress: string ;
+  deliveryAddress: string;
 
   @Column('varchar', { name: 'delivery_city', nullable: true, length: 100 })
-  deliveryCity: string ;
+  deliveryCity: string;
 
   @Column('varchar', { name: 'delivery_zipcode', nullable: true, length: 7 })
-  deliveryZipcode: string ;
+  deliveryZipcode: string;
 
   @Column('varchar', { name: 'delivery_country', nullable: true, length: 50 })
-  deliveryCountry: string ;
+  deliveryCountry: string;
 
   @Column('varchar', { name: 'billing_address', nullable: true, length: 100 })
-  billingAddress: string ;
+  billingAddress: string;
 
   @Column('varchar', { name: 'billing_city', nullable: true, length: 100 })
-  billingCity: string ;
+  billingCity: string;
 
   @Column('varchar', { name: 'billing_zipcode', nullable: true, length: 7 })
-  billingZipcode: string ;
+  billingZipcode: string;
 
   @Column('varchar', { name: 'billing_country', nullable: true, length: 50 })
-  billingCountry: string ;
+  billingCountry: string;
 
   @Column('varchar', {
     name: 'pseudo',
@@ -55,7 +61,7 @@ export class Customers {
     unique: true,
     length: 10,
   })
-  pseudo: string ;
+  pseudo: string;
 
   @OneToMany(() => CustomerOrders, (customerOrders) => customerOrders.customer)
   customerOrders: CustomerOrders[];

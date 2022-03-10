@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Cares } from '../cares/cares.entity';
 import { Places } from '../places/places.entity';
 
@@ -20,7 +26,7 @@ export class CaresAvailabilities {
   leftPlaces: number;
 
   @Column('varchar', { name: 'progenda_link', nullable: true, length: 500 })
-  progendaLink: string ;
+  progendaLink: string;
 
   @ManyToOne(() => Cares, (cares) => cares.caresAvailabilities)
   @JoinColumn([{ name: 'care_id', referencedColumnName: 'id' }])

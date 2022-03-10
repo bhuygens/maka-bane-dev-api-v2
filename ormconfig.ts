@@ -1,14 +1,13 @@
 module.exports = [
   {
     type: 'postgres',
-    host: 'btlgaenyvp7aak8f9msy-postgresql.services.clever-cloud.com',
+    host: process.env.POSTGRESQL_ADDON_HOST,
     port: 5432,
-    username: 'utxrngabylwicyhlt3io',
-    password: 'lEozILeDfj2R7OArSd5p',
-    database: 'btlgaenyvp7aak8f9msy',
+    username: process.env.POSTGRESQL_ADDON_USER,
+    password: process.env.POSTGRESQL_ADDON_PASSWORD,
+    database: process.env.POSTGRESQL_ADDON_DB,
     entities: ['dist/src/**/*.entity{.js,.ts}'],
     migrations: ['dist/migrations/*.js'],
-    synchronize: false,
     cli: {
       migrationsDir: 'migrations',
     },

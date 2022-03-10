@@ -15,30 +15,10 @@ export class FormationsService {
     return this.formationsRepository.find({});
   }
 
-  // @ts-ignore
-  async insertFormation(insertFormationDto: InsertFormationDto,): Promise<Formations> {
+  async insertFormation(insertFormationDto: InsertFormationDto): Promise<void> {
     const instance = this.formationsRepository.create(insertFormationDto);
 
     await this.formationsRepository.save(instance);
     await this.formationsRepository.save(insertFormationDto);
-    /*
-    const newFormation = new FormationsEntity();
-    newFormation.name = insertFormationDto.name;
-    newFormation.description = insertFormationDto.description;
-    newFormation.benefit = insertFormationDto.benefit;
-    newFormation.duration = insertFormationDto.duration;
-    newFormation.imagesUrlStringified =
-      insertFormationDto.images_url_stringified;
-    newFormation.tags = insertFormationDto.tags;
-    newFormation.vatPrice = insertFormationDto.vat_price;
-    newFormation.vatAmount = insertFormationDto.vat_price;
-    newFormation.durationText = insertFormationDto.duration_text;
-    newFormation.isActive = insertFormationDto.is_active;
-    newFormation.vatAmount = insertFormationDto.vat_amount;
-
-    return this.formationsRepository.save(newFormation);
-     */
-
-
   }
 }

@@ -1,4 +1,12 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Formations } from '../formations/formations.entity';
 import { Places } from '../places/places.entity';
 import { FormationsSubscribers } from '../formations-subscribers/formations-subscribers.entity';
@@ -9,7 +17,7 @@ export class FormationsAvailabilities {
   id: number;
 
   @Column('int', { name: 'formation_id', nullable: true })
-  formationId: number ;
+  formationId: number;
 
   @Column('int', { name: 'place' })
   place: number;
@@ -21,10 +29,10 @@ export class FormationsAvailabilities {
   leftPlaces: number;
 
   @Column('varchar', { name: 'progenda_link', nullable: true, length: 500 })
-  progendaLink: string ;
+  progendaLink: string;
 
   @Column('text', { name: 'hour', nullable: true })
-  hour: string ;
+  hour: string;
 
   @ManyToOne(
     () => Formations,
