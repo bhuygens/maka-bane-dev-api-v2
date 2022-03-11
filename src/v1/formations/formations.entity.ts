@@ -20,7 +20,7 @@ export class Formations {
   duration: number;
 
   @Column('varchar', { name: 'images_url', length: 1000 })
-  imagesUrlStringified: string;
+  imagesUrl: string;
 
   @Column('varchar', { name: 'tags', length: 1000 })
   tags: string;
@@ -52,12 +52,14 @@ export class Formations {
   @OneToMany(
     () => FormationsAvailabilities,
     (formationsAvailabilities) => formationsAvailabilities.formation,
+    { eager: true },
   )
-  formationsAvailabilities: FormationsAvailabilities[];
+  availabilities: FormationsAvailabilities[];
 
   @OneToMany(
     () => FormationsSubscribers,
     (formationsSubscribers) => formationsSubscribers.formation,
+    { eager: true },
   )
-  formationsSubscribers: FormationsSubscribers[];
+  subscribers: FormationsSubscribers[];
 }

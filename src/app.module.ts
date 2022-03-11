@@ -150,11 +150,4 @@ import { Connection, getConnectionOptions } from 'typeorm';
     CaresCategoriesController,
   ],
 })
-export class AppModule {
-  constructor(private connection: Connection) {
-    console.log(process.env.NODE_ENV);
-    console.log(process.env);
-    console.log('------');
-    console.log(connection.options);
-  }
-}
+export class AppModule {}

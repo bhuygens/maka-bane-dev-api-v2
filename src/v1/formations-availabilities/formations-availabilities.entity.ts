@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -34,10 +33,7 @@ export class FormationsAvailabilities {
   @Column('text', { name: 'hour', nullable: true })
   hour: string;
 
-  @ManyToOne(
-    () => Formations,
-    (formations) => formations.formationsAvailabilities,
-  )
+  @ManyToOne(() => Formations, (formations) => formations.availabilities)
   @JoinColumn([{ name: 'formation_id', referencedColumnName: 'id' }])
   formation: Formations;
 

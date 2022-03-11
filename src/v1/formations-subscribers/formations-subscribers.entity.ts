@@ -73,7 +73,7 @@ export class FormationsSubscribers {
   ])
   formationAvailability: FormationsAvailabilities;
 
-  @ManyToOne(() => Formations, (formations) => formations.formationsSubscribers)
+  @ManyToOne(() => Formations, (formations) => formations.subscribers)
   @JoinColumn([{ name: 'formation_id', referencedColumnName: 'id' }])
   formation: Formations;
 }
