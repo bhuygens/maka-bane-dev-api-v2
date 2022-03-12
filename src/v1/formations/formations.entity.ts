@@ -19,11 +19,11 @@ export class Formations {
   @Column('int', { name: 'duration' })
   duration: number;
 
-  @Column('varchar', { name: 'images_url', length: 1000 })
+  @Column('text', { name: 'images_url', array: true, nullable: true})
   imagesUrl: string;
 
-  @Column('varchar', { name: 'tags', length: 1000 })
-  tags: string;
+  @Column('text', { name: 'tags', nullable: true, array: true })
+  tags: string[];
 
   @Column({
     name: 'vat_price',

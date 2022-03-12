@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { FormationsService } from './formations.service';
 import { CreateFormationDto } from './dto/createFormationDto';
 import { Formations } from './formations.entity';
 import { RequestSuccess } from '../../.common/interfaces/RequestSuccess';
+import { UpdateFormationDto } from './dto/updateFormationDto';
 
 @Controller('formations')
 export class FormationsController {
@@ -28,5 +29,12 @@ export class FormationsController {
   @Get(':id')
   async getFormationById(@Param('id') id: number): Promise<Formations> {
     return await this.formationsService.getFormationById(id);
+  }
+
+  @Patch()
+  async updateFormation(
+    @Body() updateFormationDTO: UpdateFormationDto,
+  ): Promise<RequestSuccess> {
+    return await this.formationsService.update(updateFormationDTO);
   }
 }

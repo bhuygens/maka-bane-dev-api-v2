@@ -21,11 +21,9 @@ export class FormationsService {
     return await this.formationsRepository.find({});
   }
 
-  async createFormation(insertFormationDto: CreateFormationDto): Promise<void> {
-    const instance = this.formationsRepository.create(insertFormationDto);
-
-    await this.formationsRepository.save(instance);
-    await this.formationsRepository.save(insertFormationDto);
+  async createFormation(createFormationDto: CreateFormationDto): Promise<void> {
+    const newFormation = this.formationsRepository.create(createFormationDto);
+    await this.formationsRepository.save(newFormation);
   }
 
   async removeFormation(id: number) {
@@ -87,7 +85,7 @@ export class FormationsService {
           res.length > 0 && ErrorManager.customException('Name already used'),
       );
 
-    // Update care
+    // Update formation
     if (formation) {
       const updateFormation = await this.formationsRepository.preload({
         id: +updateFormationDto.id,
