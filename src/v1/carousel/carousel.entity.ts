@@ -18,7 +18,7 @@ export class Carousel {
   articleUrl: string;
 
   @Column('boolean', { name: 'isOnline', default: false })
-  isOnline: number;
+  isOnline: boolean;
 
   @Column('timestamptz', { name: 'publication_date' })
   publicationDate: Date;

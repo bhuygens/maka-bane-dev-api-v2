@@ -82,7 +82,6 @@ export class BlogArticlesService {
   // DELETE ARTICLE
   async deleteArticle(id: number): Promise<BlogArticle> {
     const article = await this.blogArticlesRepository.findOne(id);
-    console.log(article);
     if (article) {
       return await this.blogArticlesRepository.remove(article);
     } else {
