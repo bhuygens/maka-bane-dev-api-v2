@@ -42,9 +42,7 @@ import { CaresCategoriesService } from './v1/cares-categories/cares-categories.s
 import { CaresCategoriesController } from './v1/cares-categories/cares-categories.controller';
 import { CaresCategoriesModule } from './v1/cares-categories/cares-categories.module';
 import { FormationsCategoriesModule } from './v1/formations-categories/formations-categories.module';
-import {
-  FormationsAvailabilitiesController,
-} from './v1/formations-availabilities/formations-availabilities.controller';
+import { FormationsAvailabilitiesController } from './v1/formations-availabilities/formations-availabilities.controller';
 import { BlogArticle } from './v1/blog-articles/blog-articles.entity';
 import { BlogCategory } from './v1/blog-categories/blog-category.entity';
 import { Cares } from './v1/cares/cares.entity';
@@ -67,8 +65,10 @@ import { ProductStock } from './v1/product-stock/product-stock.entity';
 import { Products } from './v1/products/products.entity';
 import { Reviews } from './v1/reviews/reviews.entity';
 import { BlogCategoriesService } from './v1/blog-categories/blog-categories.service';
-import { Connection, getConnectionOptions } from 'typeorm';
-
+import { getConnectionOptions } from 'typeorm';
+import { TestModule } from './test/test.module';
+import * as admin from 'firebase-admin';
+import { ServiceAccount } from 'firebase-admin';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -122,6 +122,7 @@ import { Connection, getConnectionOptions } from 'typeorm';
     CustomerOrdersAbortModule,
     CaresCategoriesModule,
     FormationsCategoriesModule,
+    TestModule,
   ],
   providers: [
     FormationsAvailabilitiesService,
@@ -150,4 +151,26 @@ import { Connection, getConnectionOptions } from 'typeorm';
     CaresCategoriesController,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  /*configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PreauthMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    });
+  }
+
+   */
+
+  constructor() {
+    // Set the config options
+    const adminConfig: ServiceAccount = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    };
+    // Initialize the firebase admin app
+    admin.initializeApp({
+      credential: admin.credential.cert(adminConfig),
+    });
+  }
+}
