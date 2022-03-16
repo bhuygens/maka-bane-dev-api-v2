@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as Process from 'process';
-
+import * as firebaseConfig from './auth/firebaseServiceAccount.json';
 import { json } from 'express';
+import firebase from 'firebase';
 
 declare const module: any;
 
@@ -17,5 +18,7 @@ async function bootstrap() {
     module.hot.dispose(() => app.close());
   }
 }
+
+firebase.initializeApp(firebaseConfig);
 
 bootstrap();

@@ -151,26 +151,4 @@ import { ServiceAccount } from 'firebase-admin';
     CaresCategoriesController,
   ],
 })
-export class AppModule {
-  /*configure(consumer: MiddlewareConsumer) {
-    consumer.apply(PreauthMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    });
-  }
-
-   */
-
-  constructor() {
-    // Set the config options
-    const adminConfig: ServiceAccount = {
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    };
-    // Initialize the firebase admin app
-    admin.initializeApp({
-      credential: admin.credential.cert(adminConfig),
-    });
-  }
-}
+export class AppModule {}

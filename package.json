@@ -10,7 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "SET NODE_ENV=development && nest start --watch",
+    "start:dev": "NODE_ENV=development nest start --watch",
     "start:prod": "node dist/src/main.js",
     "orm:run": "typeorm migration:generate -n generate-all-entities",
     "orm:runProd": "typeorm migration:run",
