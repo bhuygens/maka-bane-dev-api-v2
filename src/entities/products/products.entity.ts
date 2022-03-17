@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { DiscountCodes } from '../discount-codes/discount-codes.entity';
 import { ProductStock } from './product-stock.entity';
 import { ProductCategories } from './product-categories.entity';
@@ -79,7 +86,9 @@ export class Products {
   @OneToMany(() => DiscountCodes, (discountCodes) => discountCodes.product)
   discountCodes: DiscountCodes[];
 
-  @OneToMany(() => ProductStock, (productStock) => productStock.product)
+  @OneToMany(() => ProductStock, (productStock) => productStock.product, {
+    eager: true,
+  })
   productStocks: ProductStock[];
 
   @ManyToOne(

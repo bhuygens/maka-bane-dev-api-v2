@@ -11,7 +11,4 @@ export class ProductCategoriesService {
     private readonly productCategoriesRepository: Repository<ProductCategories>,
   ) {}
 
-  async getProductByCategoryId(id: number): Promise<Products[]> {
-    return await this.productCategoriesRepository.find(id);
-  }
 }

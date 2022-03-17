@@ -58,4 +58,9 @@ export class ProductsService {
     }
     return this.productsRepository.save(product);
   }
+
+  async getProductByCategoryId(id: number): Promise<Products[]> {
+    const category = await this.productsCategoriesRepository.findOne(id);
+    return await this.productsRepository.find({ category });
+  }
 }
