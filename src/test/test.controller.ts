@@ -17,4 +17,11 @@ export class TestController {
   ): Promise<string> {
     return await this.testService.userAuthentication(userData);
   }
+
+  @Post('/stripe')
+  async testStripeCreateCustomer(
+    @Body() userData: { email: string; name: string },
+  ): Promise<any> {
+    return await this.testService.createStripeAccount(userData);
+  }
 }
