@@ -20,8 +20,6 @@ export class BlogCategoriesService {
       name: blogCategory.name,
     });
 
-    console.log(category);
-
     if (!category) {
       const newCategory = this.blogCategoryRepository.create(blogCategory);
       return await this.blogCategoryRepository.save(newCategory);

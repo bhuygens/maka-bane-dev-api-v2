@@ -41,7 +41,7 @@ export class FormationsSubscribers {
   @Column({
     name: 'price',
     type: 'decimal',
-    precision: 2,
+    precision: 4,
     default: 0.0,
     nullable: false,
   })

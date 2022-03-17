@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { DiscountCodes } from '../discount-codes/discount-codes.entity';
 import { ProductStock } from './product-stock.entity';
 import { ProductCategories } from './product-categories.entity';
@@ -47,7 +39,7 @@ export class Products {
   })
   vatClass: number;
 
-  @Column('int', { name: 'category_id' })
+  @Column('int', { name: 'category_id', nullable: false })
   categoryId: number;
 
   @Column('int', { name: 'current_stock', nullable: true })
@@ -65,8 +57,8 @@ export class Products {
   @Column('boolean', { name: 'is_best_product', default: false })
   isBestProduct: number;
 
-  @Column('varchar', { name: 'images_url', nullable: true, length: 1000 })
-  imagesUrl: string;
+  @Column('varchar', { name: 'images_url', array: true })
+  imagesUrl: string[];
 
   @Column('boolean', {
     name: 'has_product_declination',
