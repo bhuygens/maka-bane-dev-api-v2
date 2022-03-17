@@ -89,6 +89,6 @@ export class Products {
   @JoinColumn([{ name: 'category_id', referencedColumnName: 'id' }])
   category: ProductCategories;
 
-  @OneToMany(() => Reviews, (reviews) => reviews.product)
+  @OneToMany(() => Reviews, (reviews) => reviews.product, { eager: true })
   reviews: Reviews[];
 }
