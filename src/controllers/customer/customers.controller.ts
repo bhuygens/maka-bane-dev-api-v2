@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { CustomersService } from '../../services/customer/customers.service';
 import { Customers } from '../../entities/customer/customers.entity';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
+import UpdateCustomerDto from '../../dto/customers/update-customer.dto';
 
 @Controller('customers')
 export class CustomersController {
@@ -15,9 +16,16 @@ export class CustomersController {
     return await this.customerService.registerCustomer(customer);
   }
 
-  @Get('/detail/:id')
-  async getCustomerDetail(@Query('id') id: number): Promise<Customers> {
-    return await this.customerService.getCustomerDetails(id);
+  @Patch()
+  async updateCustomerInfos(@Body() updateCustomerDto: UpdateCustomerDto): Promise<Customers>{
+    return await this.customerService.updateCustomerInfos(updateCustomerDto);
+  }
+
+  @Get('/detail/:customerId')
+  async getCustomerDetail(
+    @Query('customerId') customerId: number,
+  ): Promise<Customers> {
+    return await this.customerService.getCustomerDetails(customerId);
   }
 
   @Get('/formations/:customerId')

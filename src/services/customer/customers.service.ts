@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Stripe } from 'stripe';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
+import UpdateCustomerDto from '../../dto/customers/update-customer.dto';
 
 @Injectable()
 export class CustomersService {
@@ -68,6 +69,21 @@ export class CustomersService {
   async getCustomerOrders(customerId: number): Promise<CustomerOrders[]> {
     const customer = await this.customerRepository.findOne(customerId);
     return await this.ordersRepository.find({ customer });
+  }
+
+  async updateCustomerInfos(
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customers> {
+    const customer = await this.customerRepository.preload({
+      id: +updateCustomerDto.customerId,
+      ...updateCustomerDto,
+    });
+    if (!customer) {
+      ErrorManager.notFoundException(
+        `Customer ${updateCustomerDto.customerId} not found`,
+      );
+    }
+    return this.customerRepository.save(customer);
   }
 
   userAuthentication(userData: {
