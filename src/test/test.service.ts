@@ -23,8 +23,6 @@ export class TestService {
     email: string;
   }): Promise<any> {
     return await this.stripeService.createCustomer(
-      userData.name,
-      userData.email,
-    );
+      userData.name);
   }
 }

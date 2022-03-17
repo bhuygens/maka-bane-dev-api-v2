@@ -11,13 +11,10 @@ export class StripeService {
     });
   }
 
-  public async createCustomer(
-    name: string,
-    email: string,
-  ): Promise<Stripe.Customer> {
+  public async createCustomer(email: string): Promise<Stripe.Customer> {
     return await this.stripe.customers.create({
-      name,
       email,
+      name: email,
     });
   }
 }
