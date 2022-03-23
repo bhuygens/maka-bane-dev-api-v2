@@ -4,7 +4,7 @@ import { StripeService } from '../_common/stripe/stripe.service';
 import ErrorManager from '../../_shared/utils/ErrorManager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customers } from '../../entities/customer/customers.entity';
-import { Repository } from 'typeorm';
+import { Connection, getRepository, Repository } from 'typeorm';
 import { Stripe } from 'stripe';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
@@ -20,6 +20,7 @@ export class CustomersService {
     private readonly formationsSubscribersRepository: Repository<FormationsSubscribers>,
     @InjectRepository(CustomerOrders)
     private readonly ordersRepository: Repository<CustomerOrders>,
+    private connection: Connection,
   ) {}
 
   async registerCustomer(customer: {
@@ -55,15 +56,19 @@ export class CustomersService {
     };
   }
 
-  async getCustomerDetails(id: number) {
-    return await this.customerRepository.findOne(id);
+  async getCustomerDetails(email: string) {
+    return await this.customerRepository.findOne({ email: email });
   }
 
-  async getCustomerFormations(
-    customerId: number,
-  ): Promise<FormationsSubscribers[]> {
-    const customer = await this.customerRepository.findOne(customerId);
-    return await this.formationsSubscribersRepository.find({ customer });
+  async getCustomerFormations(id: number): Promise<FormationsSubscribers[]> {
+    console.log(id);
+
+    return await getRepository(FormationsSubscribers)
+      .createQueryBuilder('fs')
+      .where('fs.customer_id = :id', { id })
+      .leftJoinAndSelect('fs.formation', 'formation')
+      .leftJoinAndSelect('fs.formationAvailability', 'availability')
+      .getMany();
   }
 
   async getCustomerOrders(customerId: number): Promise<CustomerOrders[]> {
@@ -75,12 +80,12 @@ export class CustomersService {
     updateCustomerDto: UpdateCustomerDto,
   ): Promise<Customers> {
     const customer = await this.customerRepository.preload({
-      id: +updateCustomerDto.customerId,
+      id: updateCustomerDto.id,
       ...updateCustomerDto,
     });
     if (!customer) {
       ErrorManager.notFoundException(
-        `Customer ${updateCustomerDto.customerId} not found`,
+        `Customer ${updateCustomerDto.id} not found`,
       );
     }
     return this.customerRepository.save(customer);
@@ -90,7 +95,6 @@ export class CustomersService {
     email: string;
     password: string;
   }): Promise<any> {
-    console.log('userData', userData);
     return firebase
       .auth()
       .signInWithEmailAndPassword(userData.email, userData.password)

@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Customers } from './customers.entity';
 
 @Entity('customer_pre_orders')
@@ -19,8 +12,8 @@ export class CustomerPreOrders {
   @Column('int', { name: 'customer_id', nullable: true })
   customerId: number;
 
-  @Column('text', { name: 'order_data', nullable: true })
-  orderData: string;
+  @Column('text', { name: 'order_data', array: true })
+  orderData: string[];
 
   @Column('int', { name: 'product_count', nullable: true })
   productCount: number;

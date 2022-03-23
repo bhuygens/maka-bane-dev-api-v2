@@ -6,7 +6,12 @@ import { FormationsController } from '../../controllers/formations/formations.co
 import { FormationsAvailabilities } from '../../entities/formations/formations-availabilities.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Formations, FormationsAvailabilities])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Formations,
+      FormationsAvailabilities,
+    ]),
+  ],
   providers: [FormationsService],
   controllers: [FormationsController],
 })

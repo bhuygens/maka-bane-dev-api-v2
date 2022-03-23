@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateArticleDto } from '../../dto/blog/create-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlogArticle } from '../../entities/blog/blog-articles.entity';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { BlogCategory } from '../../entities/blog/blog-category.entity';
 import { UpdateArticleDto } from '../../dto/blog/update-article.dto';
 import ErrorManager from '../../_shared/utils/ErrorManager';
@@ -14,6 +14,7 @@ export class BlogArticlesService {
     private readonly blogArticlesRepository: Repository<BlogArticle>,
     @InjectRepository(BlogCategory)
     private readonly blogCategoriesRepository: Repository<BlogCategory>,
+    private readonly connection: Connection,
   ) {}
 
   // CREATE ARTICLE
@@ -44,8 +45,16 @@ export class BlogArticlesService {
   }
 
   // GET BEST ARTICLES
-  async getBestArticles(): Promise<BlogArticle[]> {
-    return await this.blogArticlesRepository.find({ isBestArticle: true });
+  async getBestArticles(): Promise<any> {
+    try {
+      return await this.blogArticlesRepository
+        .createQueryBuilder('blogArticles')
+        .where('blogArticles.isBestArticle = :name', { name: 'true' })
+        .leftJoinAndSelect('blogArticles.category', 'categories')
+        .getMany();
+    } catch (e) {
+      ErrorManager.customException(e);
+    }
   }
 
   // GET ARTICLE BY ID

@@ -13,18 +13,24 @@ export class ProductsController {
     return await this.productsService.createProduct(createProductDto);
   }
 
-  @Get(':id')
-  async getProductById(@Param('id') id: number): Promise<Products | void> {
-    return await this.productsService.getProductById(id);
-  }
 
   @Get('/category/:id')
   async getProductByCategoryId(@Param('id') id: number) {
     return await this.productsService.getProductByCategoryId(id);
   }
 
+  @Get('/best')
+  async getBestProducts() {
+    return await this.productsService.getBestProducts();
+  }
+
   @Patch()
   async updateProduct(@Body() updateProductDto: UpdateProductDto) {
     return await this.productsService.updateProduct(updateProductDto);
+  }
+
+  @Get(':id')
+  async getProductById(@Param('id') id: number): Promise<Products | void> {
+    return await this.productsService.getProductById(id);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { CustomersService } from '../../services/customer/customers.service';
 import { Customers } from '../../entities/customer/customers.entity';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
@@ -17,20 +17,20 @@ export class CustomersController {
   }
 
   @Patch()
-  async updateCustomerInfos(@Body() updateCustomerDto: UpdateCustomerDto): Promise<Customers>{
+  async updateCustomerInfos(
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customers> {
     return await this.customerService.updateCustomerInfos(updateCustomerDto);
   }
 
-  @Get('/detail/:customerId')
-  async getCustomerDetail(
-    @Query('customerId') customerId: number,
-  ): Promise<Customers> {
-    return await this.customerService.getCustomerDetails(customerId);
+  @Post('/detail')
+  async getCustomerDetail(@Body() body: { email: string }): Promise<Customers> {
+    return await this.customerService.getCustomerDetails(body.email);
   }
 
   @Get('/formations/:customerId')
   async getCustomerFormations(
-    @Query('customerId') customerId: number,
+    @Param('customerId') customerId: number,
   ): Promise<FormationsSubscribers[]> {
     return await this.customerService.getCustomerFormations(customerId);
   }

@@ -30,7 +30,6 @@ export class FormationsService {
     const formationToDelete: Formations =
       await this.formationsRepository.findOne(id);
     if (formationToDelete) {
-
       // check if formation availabilities are linked
       const hasAvailabilitiesLinked =
         await this.formationsAvailabilitiesRepository

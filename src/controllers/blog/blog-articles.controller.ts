@@ -9,7 +9,6 @@ export class BlogArticlesController {
 
   @Post()
   async create(@Body() createArticle: CreateArticleDto) {
-    console.log('object', createArticle);
     return this.blogArticlesService.createArticle(createArticle);
   }
 
@@ -22,7 +21,6 @@ export class BlogArticlesController {
   async getBestArticles() {
     return this.blogArticlesService.getBestArticles();
   }
-
   @Get(':id')
   async getArticleById(@Param('id') id: string) {
     return this.blogArticlesService.getArticleById(+id);
