@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Customers } from './customers.entity';
+import { OrderInfosModel } from '../../interfaces/orders/order-infos.model';
 
 @Entity('customer_orders')
 export class CustomerOrders {
@@ -19,8 +20,8 @@ export class CustomerOrders {
   @Column('int', { name: 'customer_id', nullable: true })
   customerId: number;
 
-  @Column('text', { name: 'order_data', nullable: true })
-  orderData: string;
+  @Column('jsonb', { name: 'order_data', nullable: true })
+  orderData: OrderInfosModel;
 
   @Column('int', { name: 'product_count', nullable: true })
   productCount: number;

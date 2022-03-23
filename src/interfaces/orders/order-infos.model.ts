@@ -1,11 +1,11 @@
 export interface OrderInfosModel {
-  delivery: OrderDeliveryDto;
-  billing: OrderBillingDto;
-  products: OrderProductsDto[];
-  pricing: OrderPricingDto;
+  delivery: OrderDeliveryModel;
+  billing: OrderBillingModel;
+  products: OrderProductsModel[];
+  pricing: OrderPricingModel;
 }
 
-interface OrderDeliveryDto {
+export interface OrderDeliveryModel {
   lastname: string;
   firstname: string;
   address: string;
@@ -16,7 +16,7 @@ interface OrderDeliveryDto {
   deliveryOption: string;
 }
 
-interface OrderBillingDto {
+export interface OrderBillingModel {
   lastname: string;
   firstname: string;
   address: string;
@@ -27,7 +27,7 @@ interface OrderBillingDto {
   vatNumber: string;
 }
 
-interface OrderProductsDto {
+export interface OrderProductsModel {
   name: string;
   retailPrice: number;
   currentStock: number;
@@ -36,7 +36,7 @@ interface OrderProductsDto {
   quantity: number;
 }
 
-interface OrderPricingDto {
+export interface OrderPricingModel {
   priceWithoutPromo: number;
   priceWithPromo: number;
   promoCodeApplied: string;

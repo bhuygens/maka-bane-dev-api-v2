@@ -6,11 +6,12 @@ import * as admin from 'firebase-admin';
 import firebase from 'firebase';
 import adminConfig from './_config/firebase-admin-config';
 import firebaseConfig from './_config/firebase-config';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Initialize FIREBASE
   firebase.initializeApp(firebaseConfig);
