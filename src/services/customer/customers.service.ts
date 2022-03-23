@@ -4,22 +4,27 @@ import { StripeService } from '../_common/stripe/stripe.service';
 import ErrorManager from '../../_shared/utils/ErrorManager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customers } from '../../entities/customer/customers.entity';
-import { Repository } from 'typeorm';
+import { Connection, getRepository, Repository } from 'typeorm';
 import { Stripe } from 'stripe';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
 import UpdateCustomerDto from '../../dto/customers/update-customer.dto';
+import {
+  OrderBillingModel,
+  OrderDeliveryModel,
+} from '../../interfaces/orders/order-infos.model';
 
 @Injectable()
 export class CustomersService {
   constructor(
     private readonly stripeService: StripeService,
     @InjectRepository(Customers)
-    private readonly customerRepository: Repository<Customers>,
+    private readonly customersRepository: Repository<Customers>,
     @InjectRepository(FormationsSubscribers)
     private readonly formationsSubscribersRepository: Repository<FormationsSubscribers>,
     @InjectRepository(CustomerOrders)
     private readonly ordersRepository: Repository<CustomerOrders>,
+    private connection: Connection,
   ) {}
 
   async registerCustomer(customer: {
@@ -38,11 +43,11 @@ export class CustomersService {
 
     // Store user in DB
     try {
-      const newCustomer = this.customerRepository.create({
+      const newCustomer = this.customersRepository.create({
         email: customer.email,
         stripeCustomerId: stripeAccount.id,
       });
-      dbUser = await this.customerRepository.save(newCustomer);
+      dbUser = await this.customersRepository.save(newCustomer);
     } catch (e) {
       console.error(e);
       ErrorManager.customException(`Error while adding user to DB, ${e}`);
@@ -55,47 +60,74 @@ export class CustomersService {
     };
   }
 
-  async getCustomerDetails(id: number) {
-    return await this.customerRepository.findOne(id);
+  async getCustomerDetails(email: string) {
+    return await this.customersRepository.findOne({ email: email });
   }
 
-  async getCustomerFormations(
-    customerId: number,
-  ): Promise<FormationsSubscribers[]> {
-    const customer = await this.customerRepository.findOne(customerId);
-    return await this.formationsSubscribersRepository.find({ customer });
+  async getCustomerFormations(id: number): Promise<FormationsSubscribers[]> {
+    return await getRepository(FormationsSubscribers)
+      .createQueryBuilder('fs')
+      .where('fs.customer_id = :id', { id })
+      .leftJoinAndSelect('fs.formation', 'formation')
+      .leftJoinAndSelect('fs.formationAvailability', 'availability')
+      .getMany();
   }
 
   async getCustomerOrders(customerId: number): Promise<CustomerOrders[]> {
-    const customer = await this.customerRepository.findOne(customerId);
+    const customer = await this.customersRepository.findOne(customerId);
     return await this.ordersRepository.find({ customer });
   }
 
   async updateCustomerInfos(
     updateCustomerDto: UpdateCustomerDto,
   ): Promise<Customers> {
-    const customer = await this.customerRepository.preload({
-      id: +updateCustomerDto.customerId,
+    const customer = await this.customersRepository.preload({
+      id: updateCustomerDto.id,
       ...updateCustomerDto,
     });
     if (!customer) {
       ErrorManager.notFoundException(
-        `Customer ${updateCustomerDto.customerId} not found`,
+        `Customer ${updateCustomerDto.id} not found`,
       );
     }
-    return this.customerRepository.save(customer);
+    return this.customersRepository.save(customer);
   }
 
   userAuthentication(userData: {
     email: string;
     password: string;
   }): Promise<any> {
-    console.log('userData', userData);
     return firebase
       .auth()
       .signInWithEmailAndPassword(userData.email, userData.password)
       .then((r) => {
         return r;
       });
+  }
+
+  async updateCustomerInfosAfterOrder(
+    customerId: number,
+    deliveryInfos: OrderDeliveryModel,
+    billingInfos: OrderBillingModel,
+  ) {
+    const customer = await this.customersRepository.findOne({
+      id: customerId,
+    });
+    console.log(customer);
+    if (customer) {
+      // update billing Infos
+      customer.billingAddress = billingInfos.address;
+      customer.billingCity = billingInfos.city;
+      customer.billingCountry = billingInfos.country;
+      customer.billingZipcode = billingInfos.zipcode;
+
+      // update delivery infos
+      customer.deliveryAddress = deliveryInfos.address;
+      customer.deliveryCity = deliveryInfos.city;
+      customer.deliveryCountry = deliveryInfos.country;
+      customer.deliveryZipcode = deliveryInfos.zipcode;
+
+      return await this.customersRepository.save(customer);
+    }
   }
 }

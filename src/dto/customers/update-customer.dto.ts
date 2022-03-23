@@ -2,7 +2,7 @@ import { IsNumber, IsString } from 'class-validator';
 
 export default class UpdateCustomerDto {
   @IsNumber()
-  customerId: number;
+  id: number;
 
   @IsString()
   lastname: string;
@@ -12,6 +12,7 @@ export default class UpdateCustomerDto {
 
   @IsString()
   phone: string;
+
   @IsString()
   deliveryAddress: string;
 
@@ -35,4 +36,7 @@ export default class UpdateCustomerDto {
 
   @IsString()
   billingCountry: string;
+
+  @IsString()
+  email: string;
 }

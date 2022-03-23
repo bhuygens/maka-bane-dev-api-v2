@@ -40,8 +40,8 @@ export class CarouselService {
   async updateCarousel(
     updateCarouselDto: UpdateCarouselDto,
   ): Promise<{ success: boolean; message: string }> {
-    // Find care
-    const care = await this.carouselRepository.findOne(updateCarouselDto.id);
+    // Find carousel
+    const carousel = await this.carouselRepository.findOne(updateCarouselDto.id);
 
     // Check if name isn't already used
     await this.carouselRepository
@@ -53,13 +53,13 @@ export class CarouselService {
           res.length > 0 && ErrorManager.customException('Name already used'),
       );
 
-    // Update care
-    if (care) {
-      const updatedCare = await this.carouselRepository.preload({
+    // Update carousel
+    if (carousel) {
+      const updateCarousel = await this.carouselRepository.preload({
         id: +updateCarouselDto.id,
         ...updateCarouselDto,
       });
-      await this.carouselRepository.save(updatedCare);
+      await this.carouselRepository.save(updateCarousel);
       return RequestManager.successRequest(
         `Carousel ${updateCarouselDto.id} updated !`,
       );

@@ -8,7 +8,13 @@ import { FormationsSubscribers } from '../../entities/formations/formations-subs
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customers, FormationsSubscribers, CustomerOrders])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Customers,
+      FormationsSubscribers,
+      CustomerOrders,
+    ]),
+  ],
   controllers: [CustomersController],
   providers: [CustomersService, StripeService],
 })

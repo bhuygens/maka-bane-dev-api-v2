@@ -62,7 +62,7 @@ export class Products {
   tags: string;
 
   @Column('boolean', { name: 'is_best_product', default: false })
-  isBestProduct: number;
+  isBestProduct: boolean;
 
   @Column('varchar', { name: 'images_url', array: true })
   imagesUrl: string[];

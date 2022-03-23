@@ -63,4 +63,17 @@ export class ProductsService {
     const category = await this.productsCategoriesRepository.findOne(id);
     return await this.productsRepository.find({ category });
   }
+
+  async getBestProducts(): Promise<Products[]> {
+
+    try {
+      return await this.productsRepository
+        .createQueryBuilder('products')
+        .where('products.isBestProduct = :name', { name: 'true' })
+        .leftJoinAndSelect('products.category', 'categories')
+        .getMany();
+    } catch (e) {
+      ErrorManager.customException(e);
+    }
+  }
 }

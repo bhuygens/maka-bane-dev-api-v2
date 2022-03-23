@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { CaresService } from '../../services/cares/cares.service';
 import CreateCareDto from '../../dto/cares/create-care.dto';
 import UpdateCareDto from '../../dto/cares/update-care.dto';
@@ -26,8 +17,8 @@ export class CaresController {
     return await this.caresService.getCareById(+id);
   }
 
-  @Get()
-  async getCareAvailabilities(@Query('availability') id: string) {
+  @Get('availability')
+  async getCareAvailabilities(@Param('availability') id: string) {
     return await this.caresService.getCareAvailabilities(+id);
   }
 

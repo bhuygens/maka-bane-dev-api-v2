@@ -28,7 +28,7 @@ export class BlogArticle {
   })
   isBestArticle: boolean;
 
-  @Column('text', { name: 'images_url' })
+  @Column('varchar', { name: 'images_url', array: true, nullable: true })
   imagesUrl: string;
 
   @Column('text', { name: 'tags', nullable: true, array: true })
