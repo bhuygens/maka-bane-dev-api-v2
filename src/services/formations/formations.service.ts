@@ -7,6 +7,9 @@ import ErrorManager from '../../_shared/utils/ErrorManager';
 import { UpdateFormationDto } from '../../dto/formations/update.formation.dto';
 import RequestManager from '../../_shared/utils/RequestManager';
 import { FormationsAvailabilities } from '../../entities/formations/formations-availabilities.entity';
+import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
+import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class FormationsService {
@@ -15,6 +18,8 @@ export class FormationsService {
     private readonly formationsRepository: Repository<Formations>,
     @InjectRepository(FormationsAvailabilities)
     private readonly formationsAvailabilitiesRepository: Repository<FormationsAvailabilities>,
+    @InjectRepository(FormationsSubscribers)
+    private readonly formationSubscribersRepository: Repository<FormationsSubscribers>,
   ) {}
 
   async getAllFormations(): Promise<Formations[]> {
@@ -98,6 +103,82 @@ export class FormationsService {
       ErrorManager.notFoundException(
         `Formation ${updateFormationDto.id} not found`,
       );
+    }
+  }
+
+  async getCategories(): Promise<Formations[]> {
+    try {
+      return await this.formationsRepository
+        .createQueryBuilder('formations')
+        .where('formations.isActive = :name', { name: 1 })
+        .orderBy('name')
+        .select(['id', 'name'])
+        .execute();
+    } catch (e) {
+      ErrorManager.customException(e);
+    }
+  }
+
+  async getAvailabilityData(id: number) {
+    try {
+      return await this.formationsAvailabilitiesRepository
+        .createQueryBuilder('availability')
+        .select(['availability.id', 'availability.date', 'availability.hour'])
+        .where('availability.id = :id', { id })
+        .leftJoinAndSelect('availability.formation', 'formation')
+        .getOne();
+    } catch (e) {
+      ErrorManager.customException(e);
+    }
+  }
+
+  async storePreBooking(preBookingDto: FormationPreBookingDto) {
+    console.log(preBookingDto);
+
+    try {
+      const depositDate = new Date();
+      const uuid = uuidv4();
+      const preBooking = this.formationSubscribersRepository.create({
+        ...preBookingDto,
+        depositDate,
+        uuid,
+      });
+      return await this.formationSubscribersRepository.save(preBooking);
+    } catch (e) {
+      ErrorManager.customException(e);
+    }
+  }
+
+  async moveBookingToPaid({
+    paymentIntentId,
+    numberPersons,
+    formationAvailabilityId,
+  }) {
+    // Update formation subscription
+    try {
+      const formationSubscriber =
+        await this.formationSubscribersRepository.findOne({
+          stripeIntentDeposit: paymentIntentId,
+        });
+      console.log('subscriber', formationSubscriber);
+      formationSubscriber.numberPersons = numberPersons;
+      formationSubscriber.hasPaidDeposit = 1;
+      formationSubscriber.errorMessage = '';
+      formationSubscriber.hasPaymentFailed = 0;
+      await this.formationSubscribersRepository.save(formationSubscriber);
+
+      // Update formation availability
+      const availability =
+        await this.formationsAvailabilitiesRepository.preload({
+          id: formationAvailabilityId,
+        });
+      availability.leftPlaces -= numberPersons;
+      await this.formationsAvailabilitiesRepository.save(availability);
+
+      // Return subscription uuid
+      return formationSubscriber.uuid;
+    } catch (e) {
+      ErrorManager.customException(e);
     }
   }
 }

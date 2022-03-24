@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Customers } from '../customer/customers.entity';
 import { FormationsAvailabilities } from './formations-availabilities.entity';
 import { Formations } from './formations.entity';
@@ -50,8 +44,8 @@ export class FormationsSubscribers {
   @Column('int', { name: 'numberPersons', nullable: true })
   numberPersons: number;
 
-  @Column('text', { name: 'paymentObject', nullable: true })
-  paymentObject: string;
+  @Column('jsonb', { name: 'paymentObject', nullable: true })
+  paymentObject: {};
 
   @Column('text', { name: 'error_message', nullable: true })
   errorMessage: string;

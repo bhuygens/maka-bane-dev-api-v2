@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { FormationsModule } from './modules/formations/formations.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -46,7 +41,6 @@ import { CustomerOrdersAbortModule } from './modules/customer/customer-orders-ab
 import { CaresCategoriesService } from './services/cares/cares-categories.service';
 import { CaresCategoriesController } from './controllers/cares/cares-categories.controller';
 import { CaresCategoriesModule } from './modules/cares/cares-categories.module';
-import { FormationsCategoriesModule } from './modules/formations/formations-categories.module';
 import { FormationsAvailabilitiesController } from './controllers/formations/formations-availabilities.controller';
 import { BlogArticle } from './entities/blog/blog-articles.entity';
 import { BlogCategory } from './entities/blog/blog-category.entity';
@@ -73,7 +67,11 @@ import { BlogCategoriesService } from './services/blog/blog-categories.service';
 import { getConnectionOptions } from 'typeorm';
 import { TestModule } from './test/test.module';
 import { PreauthMiddleware } from './_shared/middlewares/auth/preauth.middleware';
-import { StripeService } from './services/_common/stripe/stripe.service';
+import { StripeServiceHelper } from './services/_common/stripe/stripe-service-helper.service';
+import { CustomersService } from './services/customer/customers.service';
+import { StripeModule } from './modules/stripe/stripe.module';
+import { StripeController } from './controllers/stripe/stripe.controller';
+import { StripeService } from './services/stripe/stripe.service';
 
 @Module({
   imports: [
@@ -127,8 +125,8 @@ import { StripeService } from './services/_common/stripe/stripe.service';
     CarouselModule,
     CustomerOrdersAbortModule,
     CaresCategoriesModule,
-    FormationsCategoriesModule,
     TestModule,
+    StripeModule,
   ],
   providers: [
     FormationsAvailabilitiesService,
@@ -143,6 +141,8 @@ import { StripeService } from './services/_common/stripe/stripe.service';
     CaresCategoriesService,
     BlogCategoriesService,
     StripeService,
+    CustomersService,
+    StripeServiceHelper,
   ],
   controllers: [
     FormationsAvailabilitiesController,
@@ -156,6 +156,7 @@ import { StripeService } from './services/_common/stripe/stripe.service';
     BlogCategoriesController,
     CustomerOrdersAbortController,
     CaresCategoriesController,
+    StripeController,
   ],
 })
 export class AppModule implements NestModule {

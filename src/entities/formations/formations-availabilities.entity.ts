@@ -37,7 +37,9 @@ export class FormationsAvailabilities {
   @JoinColumn([{ name: 'formation_id', referencedColumnName: 'id' }])
   formation: Formations;
 
-  @ManyToOne(() => Places, (places) => places.formationsAvailabilities)
+  @ManyToOne(() => Places, (places) => places.formationsAvailabilities, {
+    eager: true,
+  })
   @JoinColumn([{ name: 'place', referencedColumnName: 'id' }])
   place2: Places;
 

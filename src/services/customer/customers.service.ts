@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import firebase from 'firebase';
-import { StripeService } from '../_common/stripe/stripe.service';
+import { StripeServiceHelper } from '../_common/stripe/stripe-service-helper.service';
 import ErrorManager from '../../_shared/utils/ErrorManager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customers } from '../../entities/customer/customers.entity';
@@ -17,7 +17,7 @@ import {
 @Injectable()
 export class CustomersService {
   constructor(
-    private readonly stripeService: StripeService,
+    private readonly stripeService: StripeServiceHelper,
     @InjectRepository(Customers)
     private readonly customersRepository: Repository<Customers>,
     @InjectRepository(FormationsSubscribers)

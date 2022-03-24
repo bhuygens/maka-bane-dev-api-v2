@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { StripeService } from '../services/_common/stripe/stripe.service';
+import { StripeServiceHelper } from '../services/_common/stripe/stripe-service-helper.service';
 import firebase from 'firebase';
 
 @Injectable()
 export class TestService {
-  constructor(private readonly stripeService: StripeService) {}
+  constructor(private readonly stripeService: StripeServiceHelper) {}
 
   userAuthentication(userData: {
     email: string;

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CustomersController } from '../../controllers/customer/customers.controller';
 import { CustomersService } from '../../services/customer/customers.service';
-import { StripeService } from '../../services/_common/stripe/stripe.service';
+import { StripeServiceHelper } from '../../services/_common/stripe/stripe-service-helper.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customers } from '../../entities/customer/customers.entity';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
@@ -16,6 +16,6 @@ import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
     ]),
   ],
   controllers: [CustomersController],
-  providers: [CustomersService, StripeService],
+  providers: [CustomersService, StripeServiceHelper],
 })
 export class CustomersModule {}
