@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { DiscountCodes } from '../discount-codes/discount-codes.entity';
 import { ProductStock } from './product-stock.entity';
 import { ProductCategories } from './product-categories.entity';
@@ -22,7 +15,7 @@ export class Products {
   @Column({
     name: 'buying_price',
     type: 'decimal',
-    precision: 2,
+    precision: 12,
     default: 0.0,
     nullable: false,
   })
@@ -31,7 +24,7 @@ export class Products {
   @Column({
     name: 'retail_price',
     type: 'decimal',
-    precision: 2,
+    precision: 12,
     default: 0.0,
     nullable: false,
   })
@@ -40,7 +33,7 @@ export class Products {
   @Column({
     name: 'vat_class',
     type: 'decimal',
-    precision: 2,
+    precision: 12,
     default: 0.0,
     nullable: false,
   })
@@ -58,8 +51,8 @@ export class Products {
   @Column('text', { name: 'benefit', nullable: true })
   benefit: string;
 
-  @Column('varchar', { name: 'tags', nullable: true, length: 250 })
-  tags: string;
+  @Column('varchar', { name: 'tags', nullable: true, length: 250, array: true })
+  tags: string[];
 
   @Column('boolean', { name: 'is_best_product', default: false })
   isBestProduct: boolean;

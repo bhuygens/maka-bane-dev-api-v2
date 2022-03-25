@@ -38,9 +38,6 @@ import { CarouselService } from './services/carousel/carousel.service';
 import { CarouselModule } from './modules/carousel/carousel.module';
 import { CustomerOrdersAbortController } from './controllers/customer/customer-orders-abort.controller';
 import { CustomerOrdersAbortModule } from './modules/customer/customer-orders-abort.module';
-import { CaresCategoriesService } from './services/cares/cares-categories.service';
-import { CaresCategoriesController } from './controllers/cares/cares-categories.controller';
-import { CaresCategoriesModule } from './modules/cares/cares-categories.module';
 import { FormationsAvailabilitiesController } from './controllers/formations/formations-availabilities.controller';
 import { BlogArticle } from './entities/blog/blog-articles.entity';
 import { BlogCategory } from './entities/blog/blog-category.entity';
@@ -127,7 +124,6 @@ import { CommonService } from './services/common/common.service';
     BlogCategoriesModule,
     CarouselModule,
     CustomerOrdersAbortModule,
-    CaresCategoriesModule,
     TestModule,
     StripeModule,
     CommonModule,
@@ -142,7 +138,6 @@ import { CommonService } from './services/common/common.service';
     ProductStockService,
     ReviewsService,
     CarouselService,
-    CaresCategoriesService,
     BlogCategoriesService,
     StripeService,
     CustomersService,
@@ -160,7 +155,6 @@ import { CommonService } from './services/common/common.service';
     ReviewsController,
     BlogCategoriesController,
     CustomerOrdersAbortController,
-    CaresCategoriesController,
     StripeController,
     CommonController,
   ],

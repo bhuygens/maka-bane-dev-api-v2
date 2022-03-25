@@ -28,7 +28,7 @@ export class Reviews {
   @Column({
     name: 'note',
     type: 'decimal',
-    precision: 2,
+    precision: 12,
     default: 0.0,
   })
   note: number;

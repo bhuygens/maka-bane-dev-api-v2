@@ -12,6 +12,10 @@ export class CaresController {
     return await this.caresService.getCares();
   }
 
+  @Get('/categories')
+  async getCareCategories() {
+    return await this.caresService.getCareCategories();
+  }
   @Get(':id')
   async getCareById(@Param('id') id: string) {
     return await this.caresService.getCareById(+id);

@@ -28,7 +28,7 @@ export class DiscountCodes {
   @Column({
     name: 'direct_code',
     type: 'decimal',
-    precision: 2,
+    precision: 12,
     default: 0.0,
     nullable: false,
   })

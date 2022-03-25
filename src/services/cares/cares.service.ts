@@ -22,6 +22,10 @@ export class CaresService {
     return await this.caresRepository.find();
   }
 
+  async getCareCategories() {
+    return await this.caresRepository.find({ select: ['id', 'name'] });
+  }
+
   async getCareById(id: number): Promise<Cares> {
     return await this.caresRepository.findOne(id);
   }
