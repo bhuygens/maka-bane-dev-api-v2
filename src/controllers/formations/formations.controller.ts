@@ -52,6 +52,9 @@ export class FormationsController {
       paymentIntentId: string;
       numberPersons: number;
       formationAvailabilityId: number;
+      lastname: string;
+      firstname: string;
+      email: string;
     },
   ) {
     return await this.formationsService.moveBookingToPaid(body);

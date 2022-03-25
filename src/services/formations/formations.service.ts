@@ -10,6 +10,7 @@ import { FormationsAvailabilities } from '../../entities/formations/formations-a
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
 import { v4 as uuidv4 } from 'uuid';
+import Sendinblue, { MailType } from '../../_shared/helpers/sendinblue.helper';
 
 @Injectable()
 export class FormationsService {
@@ -133,8 +134,6 @@ export class FormationsService {
   }
 
   async storePreBooking(preBookingDto: FormationPreBookingDto) {
-    console.log(preBookingDto);
-
     try {
       const depositDate = new Date();
       const uuid = uuidv4();
@@ -153,6 +152,9 @@ export class FormationsService {
     paymentIntentId,
     numberPersons,
     formationAvailabilityId,
+    lastname,
+    firstname,
+    email,
   }) {
     // Update formation subscription
     try {
@@ -160,7 +162,6 @@ export class FormationsService {
         await this.formationSubscribersRepository.findOne({
           stripeIntentDeposit: paymentIntentId,
         });
-      console.log('subscriber', formationSubscriber);
       formationSubscriber.numberPersons = numberPersons;
       formationSubscriber.hasPaidDeposit = 1;
       formationSubscriber.errorMessage = '';
@@ -175,10 +176,23 @@ export class FormationsService {
       availability.leftPlaces -= numberPersons;
       await this.formationsAvailabilitiesRepository.save(availability);
 
+      // Send mail to customer
+      await Sendinblue.sendEmailFromTemplate(MailType.FORMATION_ORDER_SUCCESS, {
+        email: email,
+        name: `${lastname} ${firstname}`,
+      });
       // Return subscription uuid
       return formationSubscriber.uuid;
     } catch (e) {
       ErrorManager.customException(e);
     }
   }
+
+  /*
+   try {
+    await Sendinblue.sendEmailFromTemplate(MailType.FORMATION_ORDER_SUCCESS, {
+      email: data.email,
+      name: `${data.lastname} ${data.firstname}`,
+    });
+   */
 }

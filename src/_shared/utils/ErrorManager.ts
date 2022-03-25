@@ -3,7 +3,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 export default class ErrorManager {
   static notFoundException(content: string) {
-    throw new NotFoundError(content);
+    throw new HttpException(content, HttpStatus.NOT_FOUND);
   }
 
   static alreadyExistContentException(content: string) {

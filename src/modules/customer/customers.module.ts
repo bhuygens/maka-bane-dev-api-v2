@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customers } from '../../entities/customer/customers.entity';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
+import { Newsletter } from '../../entities/newsletter/newsletter.entity';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
       Customers,
       FormationsSubscribers,
       CustomerOrders,
+      Newsletter,
     ]),
   ],
   controllers: [CustomersController],

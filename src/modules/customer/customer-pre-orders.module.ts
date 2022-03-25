@@ -8,6 +8,7 @@ import { CustomerPreOrdersService } from '../../services/customer/customer-pre-o
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
 import { CustomersService } from '../../services/customer/customers.service';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
+import { Newsletter } from '../../entities/newsletter/newsletter.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { FormationsSubscribers } from '../../entities/formations/formations-subs
       Customers,
       CustomerOrders,
       FormationsSubscribers,
+      Newsletter,
     ]),
   ],
   controllers: [CustomerPreOrdersController],
@@ -23,7 +25,6 @@ import { FormationsSubscribers } from '../../entities/formations/formations-subs
     CustomerPreOrdersService,
     StripeServiceHelper,
     CustomersService,
-    FormationsSubscribers,
   ],
 })
 export class CustomerPreOrdersModule {}

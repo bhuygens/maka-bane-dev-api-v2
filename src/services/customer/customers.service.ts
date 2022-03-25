@@ -9,10 +9,9 @@ import { Stripe } from 'stripe';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
 import UpdateCustomerDto from '../../dto/customers/update-customer.dto';
-import {
-  OrderBillingModel,
-  OrderDeliveryModel,
-} from '../../interfaces/orders/order-infos.model';
+import { OrderBillingModel, OrderDeliveryModel } from '../../interfaces/orders/order-infos.model';
+import { Newsletter } from '../../entities/newsletter/newsletter.entity';
+import { RequestSuccess } from '../../_shared/interfaces/RequestSuccess';
 
 @Injectable()
 export class CustomersService {
@@ -24,6 +23,8 @@ export class CustomersService {
     private readonly formationsSubscribersRepository: Repository<FormationsSubscribers>,
     @InjectRepository(CustomerOrders)
     private readonly ordersRepository: Repository<CustomerOrders>,
+    @InjectRepository(Newsletter)
+    private readonly newsletterRepository: Repository<Newsletter>,
     private connection: Connection,
   ) {}
 
@@ -61,7 +62,12 @@ export class CustomersService {
   }
 
   async getCustomerDetails(email: string) {
-    return await this.customersRepository.findOne({ email: email });
+    const customer = await this.customersRepository.findOne({ email: email });
+    const isInNewsletter = await this.newsletterRepository.findOne({ email });
+    return {
+      ...customer,
+      isInNewsletter: isInNewsletter ? 1 : 0,
+    };
   }
 
   async getCustomerFormations(id: number): Promise<FormationsSubscribers[]> {
@@ -80,7 +86,7 @@ export class CustomersService {
 
   async updateCustomerInfos(
     updateCustomerDto: UpdateCustomerDto,
-  ): Promise<Customers> {
+  ): Promise<RequestSuccess> {
     const customer = await this.customersRepository.preload({
       id: updateCustomerDto.id,
       ...updateCustomerDto,
@@ -90,7 +96,11 @@ export class CustomersService {
         `Customer ${updateCustomerDto.id} not found`,
       );
     }
-    return this.customersRepository.save(customer);
+    await this.customersRepository.save(customer);
+    return {
+      success: true,
+      message: 'clientUpdated',
+    };
   }
 
   userAuthentication(userData: {
@@ -113,7 +123,6 @@ export class CustomersService {
     const customer = await this.customersRepository.findOne({
       id: customerId,
     });
-    console.log(customer);
     if (customer) {
       // update billing Infos
       customer.billingAddress = billingInfos.address;
@@ -128,6 +137,63 @@ export class CustomersService {
       customer.deliveryZipcode = deliveryInfos.zipcode;
 
       return await this.customersRepository.save(customer);
+    }
+  }
+
+  async subscribeToNewsletter(email): Promise<RequestSuccess> {
+    const isExist = await this.newsletterRepository.findOne({ email });
+    if (!isExist) {
+      // Check if email is used in client table
+      const isCustomerExist = await this.customersRepository.findOne({ email });
+
+      // If customer exist -> link newsletter status to client
+      if (isCustomerExist) {
+        const customerToSave = this.newsletterRepository.create({
+          email: email,
+          customerId: isCustomerExist.id,
+        });
+        return await this.newsletterRepository.save(customerToSave).then(() => {
+          return {
+            success: true,
+            message: 'clientInserted',
+          };
+        });
+      } else {
+        // Else create new line in newsletter table
+        const customerToSave = this.newsletterRepository.create({ email });
+        return await this.newsletterRepository.save(customerToSave).then(() => {
+          return {
+            message: 'clientInserted',
+            success: true,
+          };
+        });
+      }
+    } else {
+      return {
+        success: false,
+        message: 'clientAlreadyExist',
+      };
+    }
+  }
+
+  async unsubscribeToNewsletter(email: string): Promise<RequestSuccess> {
+    const isExist = await this.newsletterRepository.findOne({ email });
+    try {
+      if (isExist) {
+        return await this.newsletterRepository.remove(isExist).then(() => {
+          return {
+            success: true,
+            message: 'customerDeleted',
+          };
+        });
+      } else {
+        return {
+          success: false,
+          message: 'customerNotFound',
+        };
+      }
+    } catch (e) {
+      ErrorManager.customException(e);
     }
   }
 }

@@ -4,6 +4,7 @@ import { Customers } from '../../entities/customer/customers.entity';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
 import UpdateCustomerDto from '../../dto/customers/update-customer.dto';
+import { RequestSuccess } from '../../_shared/interfaces/RequestSuccess';
 
 @Controller('customers')
 export class CustomersController {
@@ -19,7 +20,7 @@ export class CustomersController {
   @Patch()
   async updateCustomerInfos(
     @Body() updateCustomerDto: UpdateCustomerDto,
-  ): Promise<Customers> {
+  ): Promise<RequestSuccess> {
     return await this.customerService.updateCustomerInfos(updateCustomerDto);
   }
 
@@ -40,5 +41,14 @@ export class CustomersController {
     @Query('customerId') customerId: number,
   ): Promise<CustomerOrders[]> {
     return await this.customerService.getCustomerOrders(customerId);
+  }
+
+  @Get('/subscribeNewsletter/:email')
+  async subscribeToNewsletter(@Param('email') email: string) {
+    return await this.customerService.subscribeToNewsletter(email);
+  }
+  @Get('/unsubscribeNewsletter/:email')
+  async unsubscribeToNewsletter(@Param('email') email: string) {
+    return await this.customerService.unsubscribeToNewsletter(email);
   }
 }

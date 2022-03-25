@@ -25,7 +25,6 @@ export class StripeServiceHelper {
     method = 'card',
   ): Promise<Stripe.PaymentIntent> {
     try {
-      console.log('createPaymentIntent', amount, stripeCustomerId, method);
       const paymentIntentData = {
         customer: stripeCustomerId,
         amount: amount,
