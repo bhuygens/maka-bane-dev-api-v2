@@ -182,7 +182,9 @@ export class FormationsService {
         name: `${lastname} ${firstname}`,
       });
       // Return subscription uuid
-      return formationSubscriber.uuid;
+      return {
+        uuid: formationSubscriber.uuid,
+      };
     } catch (e) {
       ErrorManager.customException(e);
     }
