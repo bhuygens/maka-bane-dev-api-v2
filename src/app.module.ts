@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { FormationsModule } from './modules/formations/formations.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -27,7 +32,6 @@ import { CaresModule } from './modules/cares/cares.module';
 import { ProductStockController } from './controllers/products/product-stock.controller';
 import { ProductStockService } from './services/products/product-stock.service';
 import { ProductStockModule } from './modules/products/product-stock.module';
-import { ProductCategoriesModule } from './modules/products/product-categories.module';
 import { ReviewsController } from './controllers/reviews/reviews.controller';
 import { ReviewsService } from './services/reviews/reviews.service';
 import { ReviewsModule } from './modules/reviews/reviews.module';
@@ -118,7 +122,6 @@ import { CommonService } from './services/common/common.service';
     CaresAvailabilitiesModule,
     CaresModule,
     ProductStockModule,
-    ProductCategoriesModule,
     ReviewsModule,
     BlogArticlesModule,
     BlogCategoriesModule,
