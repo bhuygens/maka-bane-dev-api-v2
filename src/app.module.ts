@@ -76,6 +76,9 @@ import { StripeService } from './services/stripe/stripe.service';
 import { CommonController } from './controllers/common/common.controller';
 import { CommonModule } from './modules/common/common.module';
 import { CommonService } from './services/common/common.service';
+import { CartController } from './controllers/cart/cart.controller';
+import { CartModule } from './modules/cart/cart.module';
+import { CartService } from './services/cart/cart.service';
 
 @Module({
   imports: [
@@ -130,6 +133,7 @@ import { CommonService } from './services/common/common.service';
     TestModule,
     StripeModule,
     CommonModule,
+    CartModule,
   ],
   providers: [
     FormationsAvailabilitiesService,
@@ -146,6 +150,7 @@ import { CommonService } from './services/common/common.service';
     CustomersService,
     StripeServiceHelper,
     CommonService,
+    CartService,
   ],
   controllers: [
     FormationsAvailabilitiesController,
@@ -160,6 +165,7 @@ import { CommonService } from './services/common/common.service';
     CustomerOrdersAbortController,
     StripeController,
     CommonController,
+    CartController,
   ],
 })
 export class AppModule implements NestModule {

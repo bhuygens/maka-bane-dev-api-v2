@@ -189,12 +189,4 @@ export class FormationsService {
       ErrorManager.customException(e);
     }
   }
-
-  /*
-   try {
-    await Sendinblue.sendEmailFromTemplate(MailType.FORMATION_ORDER_SUCCESS, {
-      email: data.email,
-      name: `${data.lastname} ${data.firstname}`,
-    });
-   */
 }

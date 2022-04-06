@@ -13,8 +13,8 @@ export class CaresController {
   }
 
   @Get('/categories')
-  async getCareCategories() {
-    return await this.caresService.getCareCategories();
+  getCareCategories() {
+    return this.caresService.getCareCategories();
   }
   @Get(':id')
   async getCareById(@Param('id') id: string) {

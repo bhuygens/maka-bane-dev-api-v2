@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import CreateProductDto from '../../dto/products/create-product.dto';
 import { ProductsService } from '../../services/products/products.service';
 import { Products } from '../../entities/products/products.entity';
@@ -26,7 +18,7 @@ export class ProductsController {
   @Get('/category')
   async getProductByCategoryId(
     @Query() categoryPaginationDto: CategoryPaginationDto,
-  ) {
+  ): Promise<{ products: Products[]; length: number }> {
     return await this.productsService.getProductByCategoryId(
       categoryPaginationDto,
     );
@@ -49,8 +41,17 @@ export class ProductsController {
     return await this.productsService.updateProduct(updateProductDto);
   }
 
+  @Get('/canLoad/:id')
+  async canLoadProduct(
+    @Param('id') id: number,
+  ): Promise<{ hasDeclinedProduct: boolean; mainProductId: number }> {
+    return this.productsService.canLoadProduct(id);
+  }
+
   @Get(':id')
-  async getProductById(@Param('id') id: number): Promise<Products | void> {
+  async getProductById(
+    @Param('id') id: number,
+  ): Promise<{ product: Products; declinedProducts: Products[] } | void> {
     return await this.productsService.getProductById(id);
   }
 }

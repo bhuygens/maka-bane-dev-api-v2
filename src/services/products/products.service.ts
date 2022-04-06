@@ -39,12 +39,20 @@ export class ProductsService {
     }
   }
 
-  async getProductById(id: number): Promise<Products | void> {
+  async getProductById(
+    id: number,
+  ): Promise<{ product: Products; declinedProducts: Products[] } | void> {
     const product = await this.productsRepository.findOne(id);
+    const declinedProducts = await this.productsRepository.find({
+      where: { isDeclinationProduct: true, mainProductId: id },
+    });
     if (!product) {
       ErrorManager.customException(`Product ${id} not found`, 404);
     } else {
-      return product;
+      return {
+        product,
+        declinedProducts,
+      };
     }
   }
 
@@ -62,13 +70,12 @@ export class ProductsService {
 
   async getProductByCategoryId(
     categoryPaginationDto: CategoryPaginationDto,
-  ): Promise<Products[]> {
+  ): Promise<{ products: Products[]; length: number }> {
     try {
-      console.log(categoryPaginationDto);
       const category = await this.productsCategoriesRepository.findOne({
         id: categoryPaginationDto.categoryId,
       });
-      return await this.productsRepository.find({
+      const products = await this.productsRepository.find({
         select: [
           'id',
           'name',
@@ -92,6 +99,19 @@ export class ProductsService {
           name: 'ASC',
         },
       });
+
+      const productLength = await this.productsRepository.find({
+        select: ['id'],
+        where: {
+          category,
+          currentStock: MoreThan(0),
+          isDeclinationProduct: false,
+        },
+      });
+      return {
+        products,
+        length: productLength.length,
+      };
     } catch (e) {
       ErrorManager.customException(e);
     }
@@ -115,10 +135,29 @@ export class ProductsService {
         select: ['id', 'name'],
         order: { name: 'ASC' },
       });
-      console.log(categories);
       return categories.filter((category) => category.products.length > 0);
     } catch (e) {
       ErrorManager.customException(`categories unavailable`);
+    }
+  }
+
+  async canLoadProduct(id: number) {
+    const product = await this.productsRepository.findOne({ id });
+    if (!product) {
+      ErrorManager.notFoundException(`Product #${product.id} not found !`);
+    } else {
+      console.log(product);
+      if (product.isDeclinationProduct) {
+        return {
+          mainProductId: product.mainProductId,
+          hasDeclinedProduct: true,
+        };
+      } else {
+        return {
+          mainProductId: product.id,
+          hasDeclinedProduct: false,
+        };
+      }
     }
   }
 }
