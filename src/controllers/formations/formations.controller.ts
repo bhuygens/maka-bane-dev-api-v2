@@ -60,6 +60,11 @@ export class FormationsController {
     return await this.formationsService.moveBookingToPaid(body);
   }
 
+  @Get('/subscribers')
+  async getFormationsSubscribers() {
+    return await this.formationsService.getFormationsSubscribers();
+  }
+
   @Delete(':id')
   removeFormation(@Param('id') id: number): Promise<RequestSuccess> {
     return this.formationsService.removeFormation(id);

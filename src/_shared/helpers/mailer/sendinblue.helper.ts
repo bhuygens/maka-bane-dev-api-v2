@@ -1,4 +1,5 @@
-import ErrorManager from '../utils/ErrorManager';
+import ErrorManager from '../../utils/ErrorManager';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const SibApiV3Sdk = require('sib-api-v3-typescript');
 
 export enum MailType {
@@ -6,6 +7,7 @@ export enum MailType {
   UNSUBSCRIBE = 'unsubscribe',
   NEW_ACCOUNT = 'newAccount',
   FORMATION_ORDER_SUCCESS = 'formationOrderSuccess',
+  FORMATION_ORDER_SUCCESS_ADMIN = 'formationOrderSuccessAdmin',
 }
 
 export default class Sendinblue {
@@ -74,6 +76,8 @@ export default class Sendinblue {
         return 'Maka-Bane : Confirmation de commande';
       case MailType.FORMATION_ORDER_SUCCESS:
         return 'Maka-Bane : Confirmation de réservation';
+      case MailType.FORMATION_ORDER_SUCCESS_ADMIN:
+        return 'Maka-Bane : Nouvelle réservation client pour une formation';
       case MailType.UNSUBSCRIBE:
         return 'Maka-Bane : Confirmation de désinscription';
       case MailType.NEW_ACCOUNT:

@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 't
 import { Customers } from '../customer/customers.entity';
 import { FormationsAvailabilities } from './formations-availabilities.entity';
 import { Formations } from './formations.entity';
+import { FormationPaymentObjectModel } from '../../interfaces/formations/formation-payment-object.model';
 
 @Entity('formations_subscribers')
 export class FormationsSubscribers {
@@ -45,7 +46,7 @@ export class FormationsSubscribers {
   numberPersons: number;
 
   @Column('jsonb', { name: 'paymentObject', nullable: true })
-  paymentObject: {};
+  paymentObject: FormationPaymentObjectModel;
 
   @Column('text', { name: 'error_message', nullable: true })
   errorMessage: string;
@@ -60,7 +61,7 @@ export class FormationsSubscribers {
   @ManyToOne(
     () => FormationsAvailabilities,
     (formationsAvailabilities) =>
-      formationsAvailabilities.formationsSubscribers,
+      formationsAvailabilities.subscribers,
   )
   @JoinColumn([
     { name: 'formationAvailability_id', referencedColumnName: 'id' },

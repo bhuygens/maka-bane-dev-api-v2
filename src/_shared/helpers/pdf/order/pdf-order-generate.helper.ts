@@ -1,11 +1,11 @@
-import { DeliveryOptionsModel } from '../../../enum/delivery-options.model';
-import { PdfInvoiceModel } from '../../../interfaces/pdf/pdf-invoice.model';
+import { DeliveryOptionsModel } from '../../../../enum/delivery-options.model';
+import { PdfOrderInvoiceModel } from '../../../../interfaces/pdf/pdf-order-invoice.model';
 import PDFDocument from 'pdfkit';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 
-export default class Pdf {
-  static createInvoice(invoice: PdfInvoiceModel, path: string) {
+export default class PdfOrderGenerateHelper {
+  static createInvoice(invoice: PdfOrderInvoiceModel, path: string) {
     const doc = new PDFDocument({ size: 'A4', margin: 50 });
 
     this.generateHeader(doc, invoice);
@@ -17,7 +17,7 @@ export default class Pdf {
     doc.pipe(fs.createWriteStream(path));
   }
 
-  static generateHeader(doc: any, invoice: PdfInvoiceModel) {
+  static generateHeader(doc: any, invoice: PdfOrderInvoiceModel) {
     doc
       .image('logo.png', 50, 45, { width: 50 })
       .fillColor('#444444')
@@ -42,7 +42,7 @@ export default class Pdf {
       .moveDown();
   }
 
-  static generateCustomerInformation(doc: any, invoice: PdfInvoiceModel) {
+  static generateCustomerInformation(doc: any, invoice: PdfOrderInvoiceModel) {
     doc.fillColor('#444444').fontSize(20).text('Facture', 50, 160);
 
     this.generateHr(doc, 185);
@@ -70,7 +70,7 @@ export default class Pdf {
     this.generateHr(doc, !invoice.vatNumber ? 252 : 252 + 15);
   }
 
-  static generateInvoiceTable(doc: any, invoice: PdfInvoiceModel) {
+  static generateInvoiceTable(doc: any, invoice: PdfOrderInvoiceModel) {
     let i;
     const invoiceTableTop = 330;
 

@@ -1,23 +1,21 @@
-import {
-  PdfInvoiceItemModel,
-  PdfInvoiceModel,
-} from '../../../interfaces/pdf/pdf-invoice.model';
-import Pdf from './pdf-template.helper';
-import ErrorManager from '../../utils/ErrorManager';
+import { PdfInvoiceItemModel, PdfOrderInvoiceModel } from '../../../../interfaces/pdf/pdf-order-invoice.model';
+import Pdf from './pdf-order-generate.helper';
+import ErrorManager from '../../../utils/ErrorManager';
 import * as PDFDocument from 'pdfkit';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Customers } from '../../../entities/customer/customers.entity';
+import { Customers } from '../../../../entities/customer/customers.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs';
-import { CustomerOrders } from '../../../entities/customer/customer-orders.entity';
+import { CustomerOrders } from '../../../../entities/customer/customer-orders.entity';
 
-export default class PdfCreationHelper {
+export default class PdfOrderModel {
   constructor(
     @InjectRepository(Customers)
     private readonly customerRepository: Repository<Customers>,
   ) {}
 
-  static setOrderInvoiceModel(order: CustomerOrders): PdfInvoiceModel {
+  // set model for order
+  static setOrderInvoiceModel(order: CustomerOrders): PdfOrderInvoiceModel {
     // format each bought product
     const productsFormatted = [];
     order.orderData.products.forEach((product: any) => {
@@ -32,7 +30,7 @@ export default class PdfCreationHelper {
       productsFormatted.push(newProduct);
     });
 
-    const invoiceObject: PdfInvoiceModel = {
+    const invoiceObject: PdfOrderInvoiceModel = {
       invoiceNr: order.uuid,
       items: productsFormatted,
       shipping: {
@@ -62,8 +60,9 @@ export default class PdfCreationHelper {
     return invoiceObject;
   }
 
+
   static async generatePdf(
-    invoiceObject: PdfInvoiceModel,
+    invoiceObject: PdfOrderInvoiceModel,
     filePath: any,
   ): Promise<string> {
     const doc = new PDFDocument({ margin: 25 });

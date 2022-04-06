@@ -46,6 +46,7 @@ export class FormationsAvailabilities {
   @OneToMany(
     () => FormationsSubscribers,
     (formationsSubscribers) => formationsSubscribers.formationAvailability,
+    { eager: true },
   )
-  formationsSubscribers: FormationsSubscribers[];
+  subscribers: FormationsSubscribers[];
 }

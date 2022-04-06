@@ -3,7 +3,7 @@ import {
   createMailToSupportModel,
   sendEmail,
   senderMailAccount,
-} from '../../_shared/helpers/mailer.helper';
+} from '../../_shared/helpers/mailer/mailer.helper';
 import ErrorManager from '../../_shared/utils/ErrorManager';
 
 @Injectable()

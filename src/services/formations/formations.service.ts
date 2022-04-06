@@ -10,7 +10,8 @@ import { FormationsAvailabilities } from '../../entities/formations/formations-a
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
 import { v4 as uuidv4 } from 'uuid';
-import Sendinblue, { MailType } from '../../_shared/helpers/sendinblue.helper';
+import Sendinblue, { MailType } from '../../_shared/helpers/mailer/sendinblue.helper';
+import PdfFormationModel from '../../_shared/helpers/pdf/formation/pdf-formation-model';
 
 @Injectable()
 export class FormationsService {
@@ -176,6 +177,31 @@ export class FormationsService {
       availability.leftPlaces -= numberPersons;
       await this.formationsAvailabilitiesRepository.save(availability);
 
+      // get formation info
+      const formation = await this.formationsRepository.findOne({
+        id: formationSubscriber.formationId,
+      });
+      // Generate invoice
+      const invoiceContent = PdfFormationModel.setFormationInvoiceModel(
+        formation,
+        formationSubscriber,
+        availability,
+      );
+
+      console.log(invoiceContent);
+      const filePath = `formation-invoices/${invoiceContent.uuid}.pdf`;
+
+      const pdf = await PdfFormationModel.generatePdf(invoiceContent, filePath);
+      // TODO : upload invoice to firebase and copy url to sendinblue
+      // Send mail to maka-bane
+      await Sendinblue.sendEmailFromTemplate(
+        MailType.FORMATION_ORDER_SUCCESS_ADMIN,
+        {
+          email: 'huygens.benjamin@gmail.com',
+          name: `Client: ${invoiceContent.name}`,
+        },
+      );
+
       // Send mail to customer
       await Sendinblue.sendEmailFromTemplate(MailType.FORMATION_ORDER_SUCCESS, {
         email: email,
@@ -185,6 +211,26 @@ export class FormationsService {
       return {
         uuid: formationSubscriber.uuid,
       };
+    } catch (e) {
+      console.log(e);
+      ErrorManager.customException(e);
+    }
+  }
+
+  async getFormationsSubscribers() {
+    try {
+      // return all subscriptions
+      /*return await this.formationSubscribersRepository
+        .createQueryBuilder('fs')
+        .leftJoinAndSelect('fs.formation', 'formation')
+        .leftJoinAndSelect('fs.customer', 'customer')
+        .orderBy('formation.name')
+        .getMany();
+       */
+      return this.formationsRepository
+        .createQueryBuilder('f')
+        .leftJoinAndSelect('f.availabilities', 'availabilities')
+        .getMany();
     } catch (e) {
       ErrorManager.customException(e);
     }
