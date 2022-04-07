@@ -14,7 +14,7 @@ export default class ErrorManager {
     throw new HttpException(content, HttpStatus.BAD_REQUEST);
   }
 
-  static customException(content: string, status = 400) {
+  static customException(content: Error | string, status = 400) {
     throw new HttpException(content, status);
   }
 }

@@ -1,4 +1,5 @@
-import ErrorManager from '../utils/ErrorManager';
+import ErrorManager from '../../utils/ErrorManager';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const SibApiV3Sdk = require('sib-api-v3-typescript');
 
 export enum MailType {
@@ -6,6 +7,7 @@ export enum MailType {
   UNSUBSCRIBE = 'unsubscribe',
   NEW_ACCOUNT = 'newAccount',
   FORMATION_ORDER_SUCCESS = 'formationOrderSuccess',
+  FORMATION_ORDER_SUCCESS_ADMIN = 'formationOrderSuccessAdmin',
 }
 
 export default class Sendinblue {
@@ -56,6 +58,19 @@ export default class Sendinblue {
           name: `${uuid}.pdf`,
         },
       ];
+    } else if (type === MailType.FORMATION_ORDER_SUCCESS_ADMIN) {
+      sendSmtpEmail.params = {
+        customerName: to.name,
+        invoiceUrl:
+          type === MailType.FORMATION_ORDER_SUCCESS_ADMIN ? uploadUrl : null,
+      };
+      // Attachment
+      sendSmtpEmail.attachment = [
+        {
+          url: uploadUrl,
+          name: `${to.name}-${uuid}.pdf`,
+        },
+      ];
     }
 
     await apiInstance.sendTransacEmail(sendSmtpEmail).then(
@@ -63,7 +78,7 @@ export default class Sendinblue {
         return data;
       },
       (error: Error) => {
-        ErrorManager.customException(error.message);
+        ErrorManager.customException(error);
       },
     );
   }
@@ -74,6 +89,8 @@ export default class Sendinblue {
         return 'Maka-Bane : Confirmation de commande';
       case MailType.FORMATION_ORDER_SUCCESS:
         return 'Maka-Bane : Confirmation de réservation';
+      case MailType.FORMATION_ORDER_SUCCESS_ADMIN:
+        return 'Maka-Bane : Nouvelle réservation client pour une formation';
       case MailType.UNSUBSCRIBE:
         return 'Maka-Bane : Confirmation de désinscription';
       case MailType.NEW_ACCOUNT:
@@ -89,13 +106,14 @@ export default class Sendinblue {
         return 1;
       case MailType.FORMATION_ORDER_SUCCESS:
         return 2;
-      case MailType.UNSUBSCRIBE:
+      case MailType.FORMATION_ORDER_SUCCESS_ADMIN:
         return 3;
+      case MailType.UNSUBSCRIBE:
+        return 4;
       case MailType.NEW_ACCOUNT:
-        return 4;
-
+        return 5;
       default:
-        return 4;
+        return 1;
     }
   }
 }

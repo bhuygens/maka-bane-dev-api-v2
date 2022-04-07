@@ -1,4 +1,4 @@
-export interface PdfInvoiceModel {
+export interface PdfOrderInvoiceModel {
   shipping: {
     name: string;
     address: string;

@@ -10,7 +10,9 @@ import { FormationsAvailabilities } from '../../entities/formations/formations-a
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
 import { v4 as uuidv4 } from 'uuid';
-import Sendinblue, { MailType } from '../../_shared/helpers/sendinblue.helper';
+import Sendinblue, { MailType } from '../../_shared/helpers/mailer/sendinblue.helper';
+import PdfFormationModel from '../../_shared/helpers/pdf/formation/pdf-formation-model';
+import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
 
 @Injectable()
 export class FormationsService {
@@ -176,6 +178,40 @@ export class FormationsService {
       availability.leftPlaces -= numberPersons;
       await this.formationsAvailabilitiesRepository.save(availability);
 
+      // get formation info
+      const formation = await this.formationsRepository.findOne({
+        id: formationSubscriber.formationId,
+      });
+      // Generate invoice
+      const invoiceContent = PdfFormationModel.setFormationInvoiceModel(
+        formation,
+        formationSubscriber,
+        availability,
+      );
+
+      const localFilePath = `formation-invoices/${invoiceContent.uuid}.pdf`;
+      const remoteFilePath = `formations-invoices/${formationSubscriber.uuid}.pdf`;
+
+      await PdfFormationModel.generatePdf(invoiceContent, localFilePath);
+
+      const url = await FirebaseHelper.uploadFileToFirebase(
+        formationSubscriber,
+        availability,
+        localFilePath,
+        remoteFilePath,
+      );
+
+      // Send mail to maka-bane
+      await Sendinblue.sendEmailFromTemplate(
+        MailType.FORMATION_ORDER_SUCCESS_ADMIN,
+        {
+          email: 'huygens.benjamin@gmail.com',
+          name: `${invoiceContent.name}`,
+        },
+        url,
+        formationSubscriber.uuid,
+      );
+
       // Send mail to customer
       await Sendinblue.sendEmailFromTemplate(MailType.FORMATION_ORDER_SUCCESS, {
         email: email,
@@ -186,15 +222,19 @@ export class FormationsService {
         uuid: formationSubscriber.uuid,
       };
     } catch (e) {
+      console.log(e);
       ErrorManager.customException(e);
     }
   }
 
-  /*
-   try {
-    await Sendinblue.sendEmailFromTemplate(MailType.FORMATION_ORDER_SUCCESS, {
-      email: data.email,
-      name: `${data.lastname} ${data.firstname}`,
-    });
-   */
+  async getFormationsSubscribers() {
+    try {
+      return this.formationsRepository
+        .createQueryBuilder('f')
+        .leftJoinAndSelect('f.availabilities', 'availabilities')
+        .getMany();
+    } catch (e) {
+      ErrorManager.customException(e);
+    }
+  }
 }

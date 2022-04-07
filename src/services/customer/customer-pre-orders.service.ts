@@ -6,7 +6,7 @@ import CustomerPreOrderDto from '../../dto/customers/customer-pre-order.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Customers } from '../../entities/customer/customers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
-import PdfCreationHelper from '../../_shared/helpers/pdf/pdf-creation.helper';
+import PdfOrderModel from '../../_shared/helpers/pdf/order/pdf-order-model';
 import ErrorManager from '../../_shared/utils/ErrorManager';
 import * as admin from 'firebase-admin';
 import * as fs from 'fs';
@@ -61,9 +61,9 @@ export class CustomerPreOrdersService {
       const newOrder = this.customerOrdersRepository.create(orderToMove);
 
       // Generate order invoice model
-      const invoiceObject = PdfCreationHelper.setOrderInvoiceModel(newOrder);
+      const invoiceObject = PdfOrderModel.setOrderInvoiceModel(newOrder);
       const filePath = `invoices/${newOrder.uuid}.pdf`;
-      await PdfCreationHelper.generatePdf(invoiceObject, filePath);
+      await PdfOrderModel.generatePdf(invoiceObject, filePath);
 
       // Upload pdf to bucket
       const firebaseFilePath = `customer-orders-invoices/${newOrder.uuid}.pdf`;
