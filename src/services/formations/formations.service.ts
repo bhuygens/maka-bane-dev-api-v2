@@ -212,6 +212,17 @@ export class FormationsService {
         formationSubscriber.uuid,
       );
 
+      // Send mail to maka-bane
+      await Sendinblue.sendEmailFromTemplate(
+        MailType.FORMATION_ORDER_SUCCESS_ADMIN,
+        {
+          email: 'makabane.reiki@gmail.com',
+          name: `${invoiceContent.name}`,
+        },
+        url,
+        formationSubscriber.uuid,
+      );
+
       // Send mail to customer
       await Sendinblue.sendEmailFromTemplate(MailType.FORMATION_ORDER_SUCCESS, {
         email: email,
