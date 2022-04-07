@@ -58,6 +58,19 @@ export default class Sendinblue {
           name: `${uuid}.pdf`,
         },
       ];
+    } else if (type === MailType.FORMATION_ORDER_SUCCESS_ADMIN) {
+      sendSmtpEmail.params = {
+        customerName: to.name,
+        invoiceUrl:
+          type === MailType.FORMATION_ORDER_SUCCESS_ADMIN ? uploadUrl : null,
+      };
+      // Attachment
+      sendSmtpEmail.attachment = [
+        {
+          url: uploadUrl,
+          name: `${to.name}-${uuid}.pdf`,
+        },
+      ];
     }
 
     await apiInstance.sendTransacEmail(sendSmtpEmail).then(
@@ -65,7 +78,7 @@ export default class Sendinblue {
         return data;
       },
       (error: Error) => {
-        ErrorManager.customException(error.message);
+        ErrorManager.customException(error);
       },
     );
   }
@@ -93,13 +106,14 @@ export default class Sendinblue {
         return 1;
       case MailType.FORMATION_ORDER_SUCCESS:
         return 2;
-      case MailType.UNSUBSCRIBE:
+      case MailType.FORMATION_ORDER_SUCCESS_ADMIN:
         return 3;
+      case MailType.UNSUBSCRIBE:
+        return 4;
       case MailType.NEW_ACCOUNT:
-        return 4;
-
+        return 5;
       default:
-        return 4;
+        return 1;
     }
   }
 }

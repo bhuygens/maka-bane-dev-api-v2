@@ -12,6 +12,7 @@ import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booki
 import { v4 as uuidv4 } from 'uuid';
 import Sendinblue, { MailType } from '../../_shared/helpers/mailer/sendinblue.helper';
 import PdfFormationModel from '../../_shared/helpers/pdf/formation/pdf-formation-model';
+import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
 
 @Injectable()
 export class FormationsService {
@@ -188,18 +189,27 @@ export class FormationsService {
         availability,
       );
 
-      console.log(invoiceContent);
-      const filePath = `formation-invoices/${invoiceContent.uuid}.pdf`;
+      const localFilePath = `formation-invoices/${invoiceContent.uuid}.pdf`;
+      const remoteFilePath = `formations-invoices/${formationSubscriber.uuid}.pdf`;
 
-      const pdf = await PdfFormationModel.generatePdf(invoiceContent, filePath);
-      // TODO : upload invoice to firebase and copy url to sendinblue
+      await PdfFormationModel.generatePdf(invoiceContent, localFilePath);
+
+      const url = await FirebaseHelper.uploadFileToFirebase(
+        formationSubscriber,
+        availability,
+        localFilePath,
+        remoteFilePath,
+      );
+
       // Send mail to maka-bane
       await Sendinblue.sendEmailFromTemplate(
         MailType.FORMATION_ORDER_SUCCESS_ADMIN,
         {
           email: 'huygens.benjamin@gmail.com',
-          name: `Client: ${invoiceContent.name}`,
+          name: `${invoiceContent.name}`,
         },
+        url,
+        formationSubscriber.uuid,
       );
 
       // Send mail to customer
@@ -219,14 +229,6 @@ export class FormationsService {
 
   async getFormationsSubscribers() {
     try {
-      // return all subscriptions
-      /*return await this.formationSubscribersRepository
-        .createQueryBuilder('fs')
-        .leftJoinAndSelect('fs.formation', 'formation')
-        .leftJoinAndSelect('fs.customer', 'customer')
-        .orderBy('formation.name')
-        .getMany();
-       */
       return this.formationsRepository
         .createQueryBuilder('f')
         .leftJoinAndSelect('f.availabilities', 'availabilities')

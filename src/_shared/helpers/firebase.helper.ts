@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import ErrorManager from '../utils/ErrorManager';
+import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
+import { FormationsAvailabilities } from '../../entities/formations/formations-availabilities.entity';
 
 const admin = require('firebase-admin');
 
@@ -47,6 +49,32 @@ export class FirebaseHelper {
         });
     });
     return uploadedImagesUrl;
+  }
+
+  static async uploadFileToFirebase(
+    subscriber: FormationsSubscribers,
+    availability: FormationsAvailabilities,
+    localFilePath: string,
+    remoteFilePath: string,
+  ) {
+    const uuid = uuidv4();
+    const bucket = admin.storage().bucket('gs://maka-bane-dev');
+    await bucket.upload(localFilePath, {
+      destination: remoteFilePath,
+      metadata: {
+        metadata: {
+          firebaseStorageDownloadTokens: uuid,
+        },
+      },
+    });
+    return (
+      'https://firebasestorage.googleapis.com/v0/b/' +
+      bucket.name +
+      '/o/formations-invoices%2F' +
+      encodeURIComponent(subscriber.uuid) +
+      '.pdf?alt=media&token=' +
+      subscriber.uuid
+    );
   }
 
   private static getFilePath(type: string, imageName: string) {
