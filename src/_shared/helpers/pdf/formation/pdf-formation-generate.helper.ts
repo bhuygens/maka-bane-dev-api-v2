@@ -24,7 +24,7 @@ export default class PdfFormationGenerateHelper {
       .fontSize(20)
       .text('Maka-Bane', 110, 57)
       .fontSize(10)
-      .text('Rue de Mons, 120b', 110, 80)
+      .text('Rue de Mons, 114', 110, 80)
       .text('7011 Mons, Belgique', 110, 95)
       .fontSize(14)
       .font('Helvetica-Bold')
