@@ -12,7 +12,8 @@ const transporter = nodemailer.createTransport({
 
 export enum senderMailAccount {
   SUPPORT = 'support@maka-bane.be',
-  CONTACT = 'contact.maka-bane@huygens.io', // 'contact@maka-bane.be',
+  CONTACT_HUYGENS = 'huygens.benjamin@gmail.com',
+  CONTACT = 'makabane.reiki@gmail.com',
   ORDER = 'order@maka-bane.be',
   NO_REPLY = 'no-reply@maka-bane.be',
 }
@@ -53,7 +54,7 @@ export async function sendEmail(
   const mailData = createMailParams(sender, receiver, subject, content);
   return await transporter.sendMail(
     mailData,
-    async (err: any, info: any): Promise<boolean> => {
+    (err: any, info: any): boolean => {
       if (err) {
         return false;
       } else {
