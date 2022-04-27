@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Formations } from '../../entities/formations/formations.entity';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { CreateFormationDto } from '../../dto/formations/create-formation.dto';
 import ErrorManager from '../../_shared/utils/ErrorManager';
 import { UpdateFormationDto } from '../../dto/formations/update.formation.dto';
@@ -10,9 +10,12 @@ import { FormationsAvailabilities } from '../../entities/formations/formations-a
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
 import { v4 as uuidv4 } from 'uuid';
-import Sendinblue, { MailType } from '../../_shared/helpers/mailer/sendinblue.helper';
+import Sendinblue, {
+  MailType,
+} from '../../_shared/helpers/mailer/sendinblue.helper';
 import PdfFormationModel from '../../_shared/helpers/pdf/formation/pdf-formation-model';
 import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
+import { Places } from '../../entities/places/places.entity';
 
 @Injectable()
 export class FormationsService {
@@ -66,7 +69,15 @@ export class FormationsService {
   }
 
   async getFormationById(id: number): Promise<Formations> {
-    const formation = await this.formationsRepository.findOne(id);
+    const date = new Date();
+    const formation = await this.formationsRepository
+      .createQueryBuilder('formation')
+      .leftJoinAndSelect('formation.availabilities', 'fa')
+      .innerJoinAndMapOne('fa.place', Places, 'place2', 'fa.place = place2.id')
+      .where('fa.date > :date', { date })
+      .andWhere('formation.id = :id', { id })
+      .getOne();
+
     if (formation) {
       return formation;
     } else {

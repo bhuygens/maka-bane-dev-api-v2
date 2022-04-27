@@ -71,8 +71,8 @@ export class FormationsController {
   }
 
   @Get(':id')
-  async getFormationById(@Param('id') id: number): Promise<Formations> {
-    return await this.formationsService.getFormationById(id);
+  getFormationById(@Param('id') id: number): Promise<Formations> {
+    return this.formationsService.getFormationById(id);
   }
 
   @Patch()
