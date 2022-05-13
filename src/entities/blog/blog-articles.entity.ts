@@ -28,6 +28,13 @@ export class BlogArticle {
   })
   isBestArticle: boolean;
 
+  @Column('boolean', {
+    name: 'is_main_article',
+    nullable: true,
+    default: false,
+  })
+  isMainArticle: boolean;
+
   @Column('varchar', { name: 'images_url', array: true, nullable: true })
   imagesUrl: string;
 

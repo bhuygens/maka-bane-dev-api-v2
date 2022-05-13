@@ -21,6 +21,7 @@ export class BlogArticlesController {
   async getBestArticles() {
     return this.blogArticlesService.getBestArticles();
   }
+
   @Get(':id')
   async getArticleById(@Param('id') id: string) {
     return this.blogArticlesService.getArticleById(+id);
@@ -29,6 +30,11 @@ export class BlogArticlesController {
   @Post('/status')
   updateArticleStatus(@Body() body: [id: string, status: string]) {
     return this.blogArticlesService.updateArticleStatus(body);
+  }
+
+  @Post('/updateMainArticle')
+  updateMainArticle(@Body() body: [id: number]) {
+    return this.blogArticlesService.updateMainArticle(body);
   }
 
   @Post('/update')

@@ -28,7 +28,7 @@ export class Formations {
   @Column({
     name: 'vat_price',
     type: 'decimal',
-    precision: 2,
+    precision: 5,
     default: 0.0,
     nullable: false,
   })

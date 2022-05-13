@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateArticleDto } from '../../dto/blog/create-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlogArticle } from '../../entities/blog/blog-articles.entity';
-import { Connection, Repository } from 'typeorm';
+import { Connection, Not, Repository } from 'typeorm';
 import { BlogCategory } from '../../entities/blog/blog-category.entity';
 import { UpdateArticleDto } from '../../dto/blog/update-article.dto';
 import ErrorManager from '../../_shared/utils/ErrorManager';
@@ -41,7 +41,11 @@ export class BlogArticlesService {
 
   // GET ALL ARTICLES
   async getAll(): Promise<BlogArticle[]> {
-    return await this.blogArticlesRepository.find();
+    return await this.blogArticlesRepository.find({
+      order: {
+        date: 'ASC',
+      },
+    });
   }
 
   // GET BEST ARTICLES
@@ -70,7 +74,34 @@ export class BlogArticlesService {
 
     if (article) {
       article.isBestArticle = body['status'] === true;
-      return await this.blogArticlesRepository.save(article);
+      return this.blogArticlesRepository.save(article);
+    } else {
+      ErrorManager.notFoundException(`blog article not found`);
+    }
+  }
+
+  // UPDATE ARTICLE STATUS
+  async updateMainArticle(body: [id: number]): Promise<BlogArticle> {
+    const article = await this.blogArticlesRepository.findOne(body['id']);
+
+    if (article) {
+      article.isMainArticle = true;
+
+      const articles = await this.blogArticlesRepository.find({
+        where: {
+          id: Not(body['id']),
+        },
+      });
+
+      if (articles) {
+        console.log(articles);
+        articles.forEach((art) => {
+          art.isMainArticle = false;
+        });
+        await this.blogArticlesRepository.save(articles);
+      } else {
+      }
+      return this.blogArticlesRepository.save(article);
     } else {
       ErrorManager.notFoundException(`blog article not found`);
     }
