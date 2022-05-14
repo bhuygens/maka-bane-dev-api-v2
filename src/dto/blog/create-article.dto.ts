@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateArticleDto {
   @IsString()
@@ -10,6 +10,7 @@ export class CreateArticleDto {
   @IsString()
   readonly contentHeader: string;
 
+  @IsOptional()
   @IsString()
   readonly imagesUrl: string;
 
@@ -20,4 +21,7 @@ export class CreateArticleDto {
   @IsOptional()
   @IsArray()
   readonly tags: [];
+
+  @IsBoolean()
+  isMainArticle: boolean;
 }

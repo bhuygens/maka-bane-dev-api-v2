@@ -22,6 +22,11 @@ export class BlogArticlesController {
     return this.blogArticlesService.getBestArticles();
   }
 
+  @Get('/categories')
+  async getCategories() {
+    return this.blogArticlesService.getCategories();
+  }
+
   @Get(':id')
   async getArticleById(@Param('id') id: string) {
     return this.blogArticlesService.getArticleById(+id);

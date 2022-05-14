@@ -13,6 +13,7 @@ import { Formations } from '../../entities/formations/formations.entity';
 import { RequestSuccess } from '../../_shared/interfaces/RequestSuccess';
 import { UpdateFormationDto } from '../../dto/formations/update.formation.dto';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
+import { FormationDashboardModel } from "../../interfaces/formations/formation-dashboard.model";
 
 @Controller('formations')
 export class FormationsController {
@@ -28,6 +29,10 @@ export class FormationsController {
   @Get()
   getAllFormations(): Promise<Formations[]> {
     return this.formationsService.getAllFormations();
+  }
+  @Get('/dashboard')
+  async getDashboardContent(): Promise<FormationDashboardModel> {
+    return await this.formationsService.getDashboardContent();
   }
 
   @Get('/categories')

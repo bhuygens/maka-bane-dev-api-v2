@@ -16,6 +16,7 @@ import Sendinblue, {
 import PdfFormationModel from '../../_shared/helpers/pdf/formation/pdf-formation-model';
 import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
 import { Places } from '../../entities/places/places.entity';
+import { FormationDashboardModel } from '../../interfaces/formations/formation-dashboard.model';
 
 @Injectable()
 export class FormationsService {
@@ -30,6 +31,25 @@ export class FormationsService {
 
   async getAllFormations(): Promise<Formations[]> {
     return await this.formationsRepository.find({});
+  }
+
+  async getDashboardContent(): Promise<FormationDashboardModel> {
+    const nearestFormation = await this.formationsAvailabilitiesRepository.find(
+      {
+        skip: 0,
+        take: 1,
+        order: { date: 'DESC' },
+      },
+    );
+    const formations = await this.formationsRepository.find({
+      order: {
+        name: 'ASC',
+      },
+    });
+    return {
+      nearestFormation: nearestFormation[0],
+      formations,
+    };
   }
 
   async createFormation(createFormationDto: CreateFormationDto): Promise<void> {

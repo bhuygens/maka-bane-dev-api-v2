@@ -31,7 +31,23 @@ export class BlogArticlesService {
         ...createArticle,
         date: new Date(),
       });
-      return this.blogArticlesRepository.save(blogArticle);
+
+      const createdArticle = await this.blogArticlesRepository.save(
+        blogArticle,
+      );
+      const articlesToUpdated = await this.blogArticlesRepository.find({
+        where: {
+          id: Not(createdArticle.id),
+        },
+      });
+      if (articlesToUpdated) {
+        articlesToUpdated.forEach((art) => {
+          art.isMainArticle = false;
+        });
+        await this.blogArticlesRepository.save(articlesToUpdated);
+      }
+
+      return createdArticle;
     } else {
       ErrorManager.notFoundException(
         `Le titre: ${createArticle.title} est déjà utilisé`,
@@ -46,6 +62,11 @@ export class BlogArticlesService {
         date: 'ASC',
       },
     });
+  }
+
+  // GET ALL ARTICLES
+  async getCategories(): Promise<BlogCategory[]> {
+    return this.blogCategoriesRepository.find();
   }
 
   // GET BEST ARTICLES
@@ -82,7 +103,11 @@ export class BlogArticlesService {
 
   // UPDATE ARTICLE STATUS
   async updateMainArticle(body: [id: number]): Promise<BlogArticle> {
-    const article = await this.blogArticlesRepository.findOne(body['id']);
+    const article = await this.blogArticlesRepository.findOne({
+      where: {
+        id: body['id'],
+      },
+    });
 
     if (article) {
       article.isMainArticle = true;
@@ -94,13 +119,12 @@ export class BlogArticlesService {
       });
 
       if (articles) {
-        console.log(articles);
         articles.forEach((art) => {
           art.isMainArticle = false;
         });
         await this.blogArticlesRepository.save(articles);
-      } else {
       }
+
       return this.blogArticlesRepository.save(article);
     } else {
       ErrorManager.notFoundException(`blog article not found`);
