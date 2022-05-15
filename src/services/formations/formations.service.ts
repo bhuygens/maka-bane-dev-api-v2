@@ -17,6 +17,7 @@ import PdfFormationModel from '../../_shared/helpers/pdf/formation/pdf-formation
 import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
 import { Places } from '../../entities/places/places.entity';
 import { FormationDashboardModel } from '../../interfaces/formations/formation-dashboard.model';
+import { CreateEventDto } from '../../dto/formations/create-event.dto';
 
 @Injectable()
 export class FormationsService {
@@ -27,6 +28,8 @@ export class FormationsService {
     private readonly formationsAvailabilitiesRepository: Repository<FormationsAvailabilities>,
     @InjectRepository(FormationsSubscribers)
     private readonly formationSubscribersRepository: Repository<FormationsSubscribers>,
+    @InjectRepository(Places)
+    private readonly placesRepository: Repository<Places>,
   ) {}
 
   async getAllFormations(): Promise<Formations[]> {
@@ -176,6 +179,21 @@ export class FormationsService {
         uuid,
       });
       return await this.formationSubscribersRepository.save(preBooking);
+    } catch (e) {
+      ErrorManager.customException(e);
+    }
+  }
+
+  async createEvent(createEventDto: CreateEventDto) {
+    try {
+      const newEvent = this.formationsAvailabilitiesRepository.create({
+        formationId: +createEventDto.formationId,
+        date: createEventDto.date,
+        hour: createEventDto.hour,
+        leftPlaces: createEventDto.leftPlaces,
+        place: 1,
+      });
+      return await this.formationsAvailabilitiesRepository.save(newEvent);
     } catch (e) {
       ErrorManager.customException(e);
     }

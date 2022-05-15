@@ -14,6 +14,7 @@ import { RequestSuccess } from '../../_shared/interfaces/RequestSuccess';
 import { UpdateFormationDto } from '../../dto/formations/update.formation.dto';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
 import { FormationDashboardModel } from "../../interfaces/formations/formation-dashboard.model";
+import { CreateEventDto } from "../../dto/formations/create-event.dto";
 
 @Controller('formations')
 export class FormationsController {
@@ -48,6 +49,11 @@ export class FormationsController {
   @Post('/storePreBooking')
   async storePreBooking(@Body() preBookingDto: FormationPreBookingDto) {
     return await this.formationsService.storePreBooking(preBookingDto);
+  }
+
+  @Post('/createEvent')
+  async createEvent(@Body() createEventDto: CreateEventDto) {
+    return this.formationsService.createEvent(createEventDto);
   }
 
   @Post('/moveBookingToPaid')
