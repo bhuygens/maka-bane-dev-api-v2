@@ -55,9 +55,21 @@ export class FormationsService {
     };
   }
 
-  async createFormation(createFormationDto: CreateFormationDto): Promise<void> {
-    const newFormation = this.formationsRepository.create(createFormationDto);
-    await this.formationsRepository.save(newFormation);
+  async createFormation(
+    createFormationDto: CreateFormationDto,
+  ): Promise<Formations> {
+    try {
+      const uploadedImages = await FirebaseHelper.uploadImagesToFirebase(
+        createFormationDto.imagesUrl,
+        createFormationDto.name.replace(/ /g, '_'),
+        'formations',
+      );
+      const newFormation = this.formationsRepository.create(createFormationDto);
+      newFormation.imagesUrl = uploadedImages;
+      return await this.formationsRepository.save(newFormation);
+    } catch (e) {
+      ErrorManager.customException(`Une erreur est survenue: ${e}`);
+    }
   }
 
   async removeFormation(id: number) {
@@ -93,15 +105,18 @@ export class FormationsService {
 
   async getFormationById(id: number): Promise<Formations> {
     const date = new Date();
+    console.log('date:', date);
+    console.log('------');
     const formation = await this.formationsRepository
       .createQueryBuilder('formation')
       .leftJoinAndSelect('formation.availabilities', 'fa')
       .innerJoinAndMapOne('fa.place', Places, 'place2', 'fa.place = place2.id')
-      .where('fa.date > :date', { date })
+      // .where('fa.date > :date', { date })
       .andWhere('formation.id = :id', { id })
       .getOne();
 
     if (formation) {
+      formation.availabilities = formation.availabilities.filter((av) => av.date > date);
       return formation;
     } else {
       ErrorManager.notFoundException(`Formation ${id} not found`);

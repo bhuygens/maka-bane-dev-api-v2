@@ -3,10 +3,9 @@ export class CreateFormationDto {
   description: string;
   benefit: string;
   duration: number;
-  images_url: string[];
-  tags: string[];
+  imagesUrl: string[];
   vat_price: number;
-  vat_amount: number;
   duration_text: string;
   is_active: boolean;
+  durationType: string;
 }

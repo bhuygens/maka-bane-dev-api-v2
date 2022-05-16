@@ -85,6 +85,8 @@ export class FirebaseHelper {
         return `articles-images/${imageName}`;
       case 'cares':
         return `cares-images/${imageName}`;
+      case 'formations':
+        return `formations-images/${imageName}`;
       default:
         return `test/${imageName}`;
     }

@@ -19,8 +19,11 @@ export class Formations {
   @Column('int', { name: 'duration' })
   duration: number;
 
-  @Column('text', { name: 'images_url', array: true, nullable: true})
-  imagesUrl: string;
+  @Column('text', { name: 'duration_type', nullable: true })
+  durationType: string;
+
+  @Column('text', { name: 'images_url', array: true, nullable: true })
+  imagesUrl: string[];
 
   @Column('text', { name: 'tags', nullable: true, array: true })
   tags: string[];
