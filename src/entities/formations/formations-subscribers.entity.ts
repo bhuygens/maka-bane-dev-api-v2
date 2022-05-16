@@ -22,7 +22,7 @@ export class FormationsSubscribers {
   hasPaidDeposit: number;
 
   @Column('boolean', { name: 'hasPaid_whole', default: false })
-  hasPaidWhole: number;
+  hasPaidWhole: boolean;
 
   @Column('text', { name: 'stripeIntent_deposit', nullable: true })
   stripeIntentDeposit: string;

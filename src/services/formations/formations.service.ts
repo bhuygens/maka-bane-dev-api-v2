@@ -18,6 +18,8 @@ import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
 import { Places } from '../../entities/places/places.entity';
 import { FormationDashboardModel } from '../../interfaces/formations/formation-dashboard.model';
 import { CreateEventDto } from '../../dto/formations/create-event.dto';
+import { BlogArticle } from '../../entities/blog/blog-articles.entity';
+import { RequestSuccess } from '../../_shared/interfaces/RequestSuccess';
 
 @Injectable()
 export class FormationsService {
@@ -112,7 +114,7 @@ export class FormationsService {
       // .where('fa.date > :date', { date })
       .andWhere('formation.id = :id', { id })
       .getOne();
-
+    console.log(formation);
     if (formation) {
       formation.availabilities = formation.availabilities.filter(
         (av) => av.date > date,
@@ -178,6 +180,7 @@ export class FormationsService {
         .select(['availability.id', 'availability.date', 'availability.hour'])
         .where('availability.id = :id', { id })
         .leftJoinAndSelect('availability.formation', 'formation')
+        .leftJoinAndSelect('availability.subscribers', 'subscribers')
         .getOne();
     } catch (e) {
       ErrorManager.customException(e);
@@ -308,6 +311,36 @@ export class FormationsService {
         .createQueryBuilder('f')
         .leftJoinAndSelect('f.availabilities', 'availabilities')
         .getMany();
+    } catch (e) {
+      ErrorManager.customException(e);
+    }
+  }
+
+  async updateWholePaymentStatusForSubscription(
+    body: [id: number],
+  ): Promise<RequestSuccess> {
+    try {
+      const subscription = await this.formationSubscribersRepository.findOne(
+        body['id'],
+      );
+      console.log(subscription);
+      if (subscription && subscription.hasPaidWhole === false) {
+        subscription.hasPaidWhole = true;
+        await this.formationSubscribersRepository.save(subscription);
+        return {
+          message: 'wholePayment_updated_OK',
+          success: true,
+        };
+      } else if (subscription && subscription.hasPaidWhole === true) {
+        subscription.hasPaidWhole = false;
+        await this.formationSubscribersRepository.save(subscription);
+        return {
+          message: 'wholePayment_updated_KO',
+          success: true,
+        };
+      } else {
+        ErrorManager.notFoundException(`Error during paid whole update`);
+      }
     } catch (e) {
       ErrorManager.customException(e);
     }

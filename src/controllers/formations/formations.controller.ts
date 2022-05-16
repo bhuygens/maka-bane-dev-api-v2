@@ -15,6 +15,7 @@ import { UpdateFormationDto } from '../../dto/formations/update.formation.dto';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
 import { FormationDashboardModel } from '../../interfaces/formations/formation-dashboard.model';
 import { CreateEventDto } from '../../dto/formations/create-event.dto';
+import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 
 @Controller('formations')
 export class FormationsController {
@@ -31,6 +32,7 @@ export class FormationsController {
   getAllFormations(): Promise<Formations[]> {
     return this.formationsService.getAllFormations();
   }
+
   @Get('/dashboard')
   async getDashboardContent(): Promise<FormationDashboardModel> {
     return await this.formationsService.getDashboardContent();
@@ -42,8 +44,8 @@ export class FormationsController {
   }
 
   @Get('/availability/:id')
-  async getAvailabilityData(@Param('id') id: number) {
-    return await this.formationsService.getAvailabilityData(id);
+  getAvailabilityData(@Param('id') id: number) {
+    return this.formationsService.getAvailabilityData(id);
   }
 
   @Post('/storePreBooking')
@@ -91,5 +93,12 @@ export class FormationsController {
     @Body() updateFormationDTO: UpdateFormationDto,
   ): Promise<RequestSuccess> {
     return await this.formationsService.update(updateFormationDTO);
+  }
+
+  @Post('/updatePaymentStatusForSubscription')
+  updateWholePaymentStatusForAvailability(
+    @Body() body: [id: number],
+  ): Promise<RequestSuccess> {
+    return this.formationsService.updateWholePaymentStatusForSubscription(body);
   }
 }
