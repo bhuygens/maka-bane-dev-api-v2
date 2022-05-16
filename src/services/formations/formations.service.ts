@@ -18,7 +18,6 @@ import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
 import { Places } from '../../entities/places/places.entity';
 import { FormationDashboardModel } from '../../interfaces/formations/formation-dashboard.model';
 import { CreateEventDto } from '../../dto/formations/create-event.dto';
-import { BlogArticle } from '../../entities/blog/blog-articles.entity';
 import { RequestSuccess } from '../../_shared/interfaces/RequestSuccess';
 
 @Injectable()
@@ -41,11 +40,18 @@ export class FormationsService {
   async getDashboardContent(): Promise<FormationDashboardModel> {
     const nearestFormation = await this.formationsAvailabilitiesRepository.find(
       {
+        where: {
+          date: MoreThan(new Date()),
+        },
         skip: 0,
         take: 1,
-        order: { date: 'DESC' },
+        order: { date: 'ASC' },
       },
     );
+    const nearestFormationContent = await this.formationsRepository.findOne(
+      nearestFormation[0].formationId,
+    );
+
     const formations = await this.formationsRepository.find({
       order: {
         name: 'ASC',
@@ -54,6 +60,7 @@ export class FormationsService {
     return {
       nearestFormation: nearestFormation[0],
       formations,
+      nearestFormationContent,
     };
   }
 
@@ -114,7 +121,6 @@ export class FormationsService {
       // .where('fa.date > :date', { date })
       .andWhere('formation.id = :id', { id })
       .getOne();
-    console.log(formation);
     if (formation) {
       formation.availabilities = formation.availabilities.filter(
         (av) => av.date > date,
@@ -323,7 +329,6 @@ export class FormationsService {
       const subscription = await this.formationSubscribersRepository.findOne(
         body['id'],
       );
-      console.log(subscription);
       if (subscription && subscription.hasPaidWhole === false) {
         subscription.hasPaidWhole = true;
         await this.formationSubscribersRepository.save(subscription);
