@@ -105,8 +105,6 @@ export class FormationsService {
 
   async getFormationById(id: number): Promise<Formations> {
     const date = new Date();
-    console.log('date:', date);
-    console.log('------');
     const formation = await this.formationsRepository
       .createQueryBuilder('formation')
       .leftJoinAndSelect('formation.availabilities', 'fa')
@@ -116,7 +114,9 @@ export class FormationsService {
       .getOne();
 
     if (formation) {
-      formation.availabilities = formation.availabilities.filter((av) => av.date > date);
+      formation.availabilities = formation.availabilities.filter(
+        (av) => av.date > date,
+      );
       return formation;
     } else {
       ErrorManager.notFoundException(`Formation ${id} not found`);
