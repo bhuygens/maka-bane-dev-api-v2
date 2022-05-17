@@ -47,6 +47,7 @@ export class BlogArticle {
   @ManyToOne(
     () => BlogCategory,
     (blogCategories) => blogCategories.blogArticles,
+    { eager: true },
   )
   @JoinColumn([{ name: 'category_id', referencedColumnName: 'id' }])
   category: BlogCategory;

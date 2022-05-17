@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateArticleDto } from '../../dto/blog/create-article.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { BlogArticle } from '../../entities/blog/blog-articles.entity';
-import { Connection, Not, Repository } from 'typeorm';
-import { BlogCategory } from '../../entities/blog/blog-category.entity';
-import { UpdateArticleDto } from '../../dto/blog/update-article.dto';
-import ErrorManager from '../../_shared/utils/ErrorManager';
+import { Injectable } from "@nestjs/common";
+import { CreateArticleDto } from "../../dto/blog/create-article.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { BlogArticle } from "../../entities/blog/blog-articles.entity";
+import { Connection, Not, Repository } from "typeorm";
+import { BlogCategory } from "../../entities/blog/blog-category.entity";
+import { UpdateArticleDto } from "../../dto/blog/update-article.dto";
+import ErrorManager from "../../_shared/utils/ErrorManager";
 
 @Injectable()
 export class BlogArticlesService {
@@ -14,7 +14,7 @@ export class BlogArticlesService {
     private readonly blogArticlesRepository: Repository<BlogArticle>,
     @InjectRepository(BlogCategory)
     private readonly blogCategoriesRepository: Repository<BlogCategory>,
-    private readonly connection: Connection,
+    private readonly connection: Connection
   ) {}
 
   // CREATE ARTICLE
@@ -23,22 +23,22 @@ export class BlogArticlesService {
 
     // Find if the name does not exist
     const isArticleExist = await this.blogArticlesRepository.findOne({
-      title: createArticle.title,
+      title: createArticle.title
     });
 
     if (!isArticleExist) {
       const blogArticle = this.blogArticlesRepository.create({
         ...createArticle,
-        date: new Date(),
+        date: new Date()
       });
 
       const createdArticle = await this.blogArticlesRepository.save(
-        blogArticle,
+        blogArticle
       );
       const articlesToUpdated = await this.blogArticlesRepository.find({
         where: {
-          id: Not(createdArticle.id),
-        },
+          id: Not(createdArticle.id)
+        }
       });
       if (articlesToUpdated) {
         articlesToUpdated.forEach((art) => {
@@ -50,17 +50,17 @@ export class BlogArticlesService {
       return createdArticle;
     } else {
       ErrorManager.notFoundException(
-        `Le titre: ${createArticle.title} est déjà utilisé`,
+        `Le titre: ${createArticle.title} est déjà utilisé`
       );
     }
   }
 
   // GET ALL ARTICLES
   async getAll(): Promise<BlogArticle[]> {
-    return await this.blogArticlesRepository.find({
+    return this.blogArticlesRepository.find({
       order: {
-        date: 'ASC',
-      },
+        date: "ASC"
+      }
     });
   }
 
@@ -73,9 +73,9 @@ export class BlogArticlesService {
   async getBestArticles(): Promise<any> {
     try {
       return await this.blogArticlesRepository
-        .createQueryBuilder('blogArticles')
-        .where('blogArticles.isBestArticle = :name', { name: 'true' })
-        .leftJoinAndSelect('blogArticles.category', 'categories')
+        .createQueryBuilder("blogArticles")
+        .where("blogArticles.isBestArticle = :name", { name: "true" })
+        .leftJoinAndSelect("blogArticles.category", "categories")
         .getMany();
     } catch (e) {
       ErrorManager.customException(e);
@@ -89,12 +89,12 @@ export class BlogArticlesService {
 
   // UPDATE ARTICLE STATUS
   async updateArticleStatus(
-    body: [id: string, status: string],
+    body: [id: string, status: string]
   ): Promise<BlogArticle> {
-    const article = await this.blogArticlesRepository.findOne(body['id']);
+    const article = await this.blogArticlesRepository.findOne(body["id"]);
 
     if (article) {
-      article.isBestArticle = body['status'] === true;
+      article.isBestArticle = body["status"] === true;
       return this.blogArticlesRepository.save(article);
     } else {
       ErrorManager.notFoundException(`blog article not found`);
@@ -105,8 +105,8 @@ export class BlogArticlesService {
   async updateMainArticle(body: [id: number]): Promise<BlogArticle> {
     const article = await this.blogArticlesRepository.findOne({
       where: {
-        id: body['id'],
-      },
+        id: body["id"]
+      }
     });
 
     if (article) {
@@ -114,8 +114,8 @@ export class BlogArticlesService {
 
       const articles = await this.blogArticlesRepository.find({
         where: {
-          id: Not(body['id']),
-        },
+          id: Not(body["id"])
+        }
       });
 
       if (articles) {
@@ -135,7 +135,7 @@ export class BlogArticlesService {
   async updateArticle(articleContent: UpdateArticleDto): Promise<BlogArticle> {
     const article = await this.blogArticlesRepository.preload({
       id: +articleContent.id,
-      ...articleContent,
+      ...articleContent
     });
     if (!article) {
       ErrorManager.notFoundException(`article ${articleContent.id} not found`);
