@@ -1,7 +1,10 @@
 import { CreateFormationDto } from './create-formation.dto';
-import { IsNumber } from 'class-validator';
+import { IsArray, IsNumber } from 'class-validator';
 
 export class UpdateFormationDto extends CreateFormationDto {
   @IsNumber()
   id: number;
+
+  @IsArray()
+  updatedImages: string[];
 }

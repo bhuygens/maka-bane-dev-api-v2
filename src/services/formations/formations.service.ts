@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Formations } from '../../entities/formations/formations.entity';
-import { MoreThan, Repository } from 'typeorm';
+import { MoreThan, Not, Repository } from 'typeorm';
 import { CreateFormationDto } from '../../dto/formations/create-formation.dto';
 import ErrorManager from '../../_shared/utils/ErrorManager';
 import { UpdateFormationDto } from '../../dto/formations/update.formation.dto';
@@ -142,13 +142,34 @@ export class FormationsService {
     // Check if name isn't already used
     await this.formationsRepository
       .find({
-        name: updateFormationDto.name,
+        where: {
+          name: updateFormationDto.name,
+          id: Not(updateFormationDto.id),
+        },
       })
       .then(
         (res) =>
           res.length > 0 && ErrorManager.customException('Name already used'),
       );
 
+    // Check and upload new images
+    let uploadedImages: string[] = [];
+    if (updateFormationDto.imagesUrl[0].includes('data:image')) {
+      // if imagesUrl begin with data:image -> new images to upload
+      uploadedImages = await FirebaseHelper.uploadImagesToFirebase(
+        updateFormationDto.imagesUrl,
+        updateFormationDto.name.replace(/ /g, '_'),
+        'formations',
+      );
+    }
+    console.log('uploadedImages', uploadedImages);
+    console.log('imagesUrl before', updateFormationDto.imagesUrl);
+    // update imagesUrl
+    updateFormationDto.imagesUrl = [...updateFormationDto.updatedImages];
+    if (uploadedImages.length > 0) {
+      updateFormationDto.imagesUrl.push(...uploadedImages);
+    }
+    console.log('imagesUrl after', updateFormationDto.imagesUrl);
     // Update formation
     if (formation) {
       const updateFormation = await this.formationsRepository.preload({

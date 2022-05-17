@@ -14,8 +14,9 @@ export class FirebaseHelper {
     const uploadedImagesUrl: string[] = [];
 
     images.forEach((image, x = 0) => {
+      const randNumber = Math.random();
       // Generate file infos
-      const imageName = `${itemName}-${x}.jpeg`;
+      const imageName = `${itemName}-${randNumber}.jpeg`;
       const remoteFilePath: string = this.getFilePath(type, imageName);
 
       const uuid = uuidv4();

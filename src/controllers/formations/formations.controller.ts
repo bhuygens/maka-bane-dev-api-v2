@@ -92,7 +92,7 @@ export class FormationsController {
   async updateFormation(
     @Body() updateFormationDTO: UpdateFormationDto,
   ): Promise<RequestSuccess> {
-    return await this.formationsService.update(updateFormationDTO);
+    return this.formationsService.update(updateFormationDTO);
   }
 
   @Post('/updatePaymentStatusForSubscription')
