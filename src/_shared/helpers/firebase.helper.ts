@@ -81,7 +81,7 @@ export class FirebaseHelper {
   private static getFilePath(type: string, imageName: string) {
     switch (type) {
       case 'product':
-        return `test/${imageName}`;
+        return `product-images/${imageName}`;
       case 'article':
         return `articles-images/${imageName}`;
       case 'cares':

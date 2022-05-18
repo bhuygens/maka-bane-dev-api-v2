@@ -36,7 +36,7 @@ export class BlogArticle {
   isMainArticle: boolean;
 
   @Column('varchar', { name: 'images_url', array: true, nullable: true })
-  imagesUrl: string;
+  imagesUrl: string[];
 
   @Column('text', { name: 'tags', nullable: true, array: true })
   tags: string[];

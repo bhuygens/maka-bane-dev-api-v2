@@ -11,8 +11,8 @@ export class CreateArticleDto {
   readonly contentHeader: string;
 
   @IsOptional()
-  @IsString()
-  readonly imagesUrl: string;
+  @IsArray()
+  imagesUrl: string[];
 
   @IsOptional()
   @IsString()

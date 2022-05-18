@@ -23,8 +23,8 @@ export class UpdateArticleDto {
   readonly isBestArticle: boolean;
 
   @IsOptional()
-  @IsString()
-  readonly imagesUrl: string;
+  @IsArray()
+  imagesUrl: string[];
 
   @IsOptional()
   @IsArray()
@@ -33,4 +33,7 @@ export class UpdateArticleDto {
   @IsOptional()
   @IsString()
   readonly contentHeader: string;
+
+  @IsArray()
+  updatedImages: string[];
 }

@@ -162,14 +162,11 @@ export class FormationsService {
         'formations',
       );
     }
-    console.log('uploadedImages', uploadedImages);
-    console.log('imagesUrl before', updateFormationDto.imagesUrl);
     // update imagesUrl
     updateFormationDto.imagesUrl = [...updateFormationDto.updatedImages];
     if (uploadedImages.length > 0) {
       updateFormationDto.imagesUrl.push(...uploadedImages);
     }
-    console.log('imagesUrl after', updateFormationDto.imagesUrl);
     // Update formation
     if (formation) {
       const updateFormation = await this.formationsRepository.preload({
