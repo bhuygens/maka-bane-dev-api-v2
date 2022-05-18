@@ -9,9 +9,13 @@ import { Stripe } from 'stripe';
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
 import UpdateCustomerDto from '../../dto/customers/update-customer.dto';
-import { OrderBillingModel, OrderDeliveryModel } from '../../interfaces/orders/order-infos.model';
+import {
+  OrderBillingModel,
+  OrderDeliveryModel,
+} from '../../interfaces/orders/order-infos.model';
 import { Newsletter } from '../../entities/newsletter/newsletter.entity';
 import { RequestSuccess } from '../../_shared/interfaces/RequestSuccess';
+import { PaginationQueryDto } from '../../dto/_common/pagination-query.dto';
 
 @Injectable()
 export class CustomersService {
@@ -195,5 +199,16 @@ export class CustomersService {
     } catch (e) {
       ErrorManager.customException(e);
     }
+  }
+
+  getCustomers(paginationQuery: PaginationQueryDto) {
+    const { limit, offset } = paginationQuery;
+    return this.customersRepository.find({
+      order: {
+        email: 'ASC',
+      },
+      skip: offset,
+      take: limit,
+    });
   }
 }

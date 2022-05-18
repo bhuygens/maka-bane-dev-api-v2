@@ -63,7 +63,11 @@ export class Customers {
   })
   pseudo: string;
 
-  @OneToMany(() => CustomerOrders, (customerOrders) => customerOrders.customer)
+  @OneToMany(
+    () => CustomerOrders,
+    (customerOrders) => customerOrders.customer,
+    { eager: true },
+  )
   customerOrders: CustomerOrders[];
 
   @OneToMany(
@@ -78,9 +82,12 @@ export class Customers {
   @OneToMany(
     () => FormationsSubscribers,
     (formationsSubscribers) => formationsSubscribers.customer,
+    { eager: true },
   )
   formationsSubscribers: FormationsSubscribers[];
 
-  @OneToMany(() => Newsletter, (newsletter) => newsletter.customer)
+  @OneToMany(() => Newsletter, (newsletter) => newsletter.customer, {
+    eager: true,
+  })
   newsletters: Newsletter[];
 }
