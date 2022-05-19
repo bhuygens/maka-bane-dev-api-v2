@@ -26,6 +26,7 @@ export class CustomersController {
     return this.customerService.getCustomers(paginationQuery);
   }
 
+
   @Post('/register')
   async registerCustomer(
     @Body() customer: { email: string },
@@ -67,5 +68,9 @@ export class CustomersController {
   @Get('/unsubscribeNewsletter/:email')
   async unsubscribeToNewsletter(@Param('email') email: string) {
     return await this.customerService.unsubscribeToNewsletter(email);
+  }
+  @Get('/:id')
+  getCustomerById(@Param('id') id: number) {
+    return this.customerService.getCustomerById(id);
   }
 }

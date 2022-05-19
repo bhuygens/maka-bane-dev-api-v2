@@ -211,4 +211,18 @@ export class CustomersService {
       take: limit,
     });
   }
+
+  async getCustomerById(id: number) {
+    const customer = await this.customersRepository.findOne({ id });
+    if (customer) {
+      const isInNewsletter = await this.newsletterRepository.findOne({
+        customerId: customer.id,
+      });
+      return {
+        ...customer,
+        isInNewsletter: isInNewsletter ? 1 : 0,
+      };
+    }
+
+  }
 }
