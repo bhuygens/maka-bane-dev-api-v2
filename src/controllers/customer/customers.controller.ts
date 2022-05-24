@@ -19,13 +19,17 @@ import { PaginationQueryDto } from '../../dto/_common/pagination-query.dto';
 export class CustomersController {
   constructor(private readonly customerService: CustomersService) {}
 
+  @Get('/search/:search')
+  async getCustomerBySearch(@Param('search') search: string): Promise<any> {
+    return this.customerService.getCustomerBySearch(search);
+  }
+
   @Post()
   async getCustomers(
     @Body() paginationQuery: PaginationQueryDto,
-  ): Promise<Customers[]> {
+  ): Promise<{ customers: Customers[]; customerSize: number }> {
     return this.customerService.getCustomers(paginationQuery);
   }
-
 
   @Post('/register')
   async registerCustomer(
@@ -50,14 +54,14 @@ export class CustomersController {
   async getCustomerFormations(
     @Param('customerId') customerId: number,
   ): Promise<FormationsSubscribers[]> {
-    return await this.customerService.getCustomerFormations(customerId);
+    return this.customerService.getCustomerFormations(customerId);
   }
 
   @Get('/orders/:customerId')
   async getCustomerOrders(
     @Query('customerId') customerId: number,
   ): Promise<CustomerOrders[]> {
-    return await this.customerService.getCustomerOrders(customerId);
+    return this.customerService.getCustomerOrders(customerId);
   }
 
   @Get('/subscribeNewsletter/:email')
@@ -69,6 +73,7 @@ export class CustomersController {
   async unsubscribeToNewsletter(@Param('email') email: string) {
     return await this.customerService.unsubscribeToNewsletter(email);
   }
+
   @Get('/:id')
   getCustomerById(@Param('id') id: number) {
     return this.customerService.getCustomerById(id);

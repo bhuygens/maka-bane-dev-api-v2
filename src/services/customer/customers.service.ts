@@ -201,15 +201,20 @@ export class CustomersService {
     }
   }
 
-  getCustomers(paginationQuery: PaginationQueryDto) {
+  async getCustomers(paginationQuery: PaginationQueryDto) {
     const { limit, offset } = paginationQuery;
-    return this.customersRepository.find({
-      order: {
-        email: 'ASC',
-      },
-      skip: offset,
-      take: limit,
-    });
+    return {
+      customers: await this.customersRepository.find({
+        order: {
+          email: 'ASC',
+        },
+        skip: offset,
+        take: limit,
+      }),
+      customersSize: await this.customersRepository.find().then((res) => {
+        return res.length;
+      }),
+    };
   }
 
   async getCustomerById(id: number) {
@@ -223,6 +228,35 @@ export class CustomersService {
         isInNewsletter: isInNewsletter ? 1 : 0,
       };
     }
+  }
 
+  async getCustomerBySearch(search: string) {
+    const customers = await this.customersRepository
+      .createQueryBuilder('customers')
+      .where('customers.email like :email', { email: `%${search}%` })
+      .orWhere('customers.last_name like :lastname', {
+        lastname: `%${search}%`,
+      })
+      .orWhere('customers.first_name like :firstname', {
+        firstname: `%${search}%`,
+      })
+      .leftJoinAndSelect(
+        'customers.formationsSubscribers',
+        'formationsSubscription',
+      )
+      .leftJoinAndSelect('customers.customerOrders', 'orders')
+      .getMany();
+
+    if (customers.length > 0) {
+      return {
+        customers,
+        success: true,
+      };
+    } else {
+      return {
+        success: false,
+        customers: null,
+      };
+    }
   }
 }
