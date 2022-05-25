@@ -27,7 +27,7 @@ export class CustomersController {
   @Post()
   async getCustomers(
     @Body() paginationQuery: PaginationQueryDto,
-  ): Promise<{ customers: Customers[]; customerSize: number }> {
+  ): Promise<{ customersSize: number; customers: Customers[] }> {
     return this.customerService.getCustomers(paginationQuery);
   }
 
