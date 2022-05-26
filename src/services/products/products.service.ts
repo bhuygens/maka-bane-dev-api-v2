@@ -146,7 +146,6 @@ export class ProductsService {
     if (!product) {
       ErrorManager.notFoundException(`Product #${product.id} not found !`);
     } else {
-      console.log(product);
       if (product.isDeclinationProduct) {
         return {
           mainProductId: product.mainProductId,

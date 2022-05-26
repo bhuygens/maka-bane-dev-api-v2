@@ -273,58 +273,19 @@ export class FormationsService {
       const formation = await this.formationsRepository.findOne({
         id: formationSubscriber.formationId,
       });
-      // Generate invoice
-      const invoiceContent = PdfFormationModel.setFormationInvoiceModel(
+      await this.sendMailAfterBookingSuccess(
         formation,
         formationSubscriber,
         availability,
+        email,
+        lastname,
+        firstname,
       );
-
-      const localFilePath = `formation-invoices/${invoiceContent.uuid}.pdf`;
-      const remoteFilePath = `formations-invoices/${formationSubscriber.uuid}.pdf`;
-
-      await PdfFormationModel.generatePdf(invoiceContent, localFilePath);
-
-      const url = await FirebaseHelper.uploadFileToFirebase(
-        formationSubscriber,
-        availability,
-        localFilePath,
-        remoteFilePath,
-      );
-
-      // Send mail to maka-bane
-      await Sendinblue.sendEmailFromTemplate(
-        MailType.FORMATION_ORDER_SUCCESS_ADMIN,
-        {
-          email: 'huygens.benjamin@gmail.com',
-          name: `${invoiceContent.name}`,
-        },
-        url,
-        formationSubscriber.uuid,
-      );
-
-      // Send mail to maka-bane
-      await Sendinblue.sendEmailFromTemplate(
-        MailType.FORMATION_ORDER_SUCCESS_ADMIN,
-        {
-          email: 'makabane.reiki@gmail.com',
-          name: `${invoiceContent.name}`,
-        },
-        url,
-        formationSubscriber.uuid,
-      );
-
-      // Send mail to customer
-      await Sendinblue.sendEmailFromTemplate(MailType.FORMATION_ORDER_SUCCESS, {
-        email: email,
-        name: `${lastname} ${firstname}`,
-      });
       // Return subscription uuid
       return {
         uuid: formationSubscriber.uuid,
       };
     } catch (e) {
-      console.log(e);
       ErrorManager.customException(e);
     }
   }
@@ -367,5 +328,104 @@ export class FormationsService {
     } catch (e) {
       ErrorManager.customException(e);
     }
+  }
+  async updateAfterBancontactPayment(body): Promise<{ orderUUID: string }> {
+    // Update formations subscribers
+    const formationSubscriber =
+      await this.formationSubscribersRepository.findOne({
+        stripeIntentDeposit: body.intent,
+      });
+
+    formationSubscriber.numberPersons = body.numberPersons;
+    formationSubscriber.hasPaidDeposit = 1;
+    formationSubscriber.errorMessage = '';
+    formationSubscriber.hasPaymentFailed = 0;
+    await this.formationSubscribersRepository.save(formationSubscriber);
+
+    // Decrement available places
+    const formationsAvailability =
+      await this.formationsAvailabilitiesRepository.findOne(
+        formationSubscriber.formationAvailabilityId,
+      );
+    formationsAvailability.leftPlaces -= 1;
+    await this.formationsAvailabilitiesRepository.save(formationsAvailability);
+
+    const formation = await this.formationsRepository.findOne(
+      formationsAvailability.formationId,
+    );
+    await this.sendMailAfterBookingSuccess(
+      formation,
+      formationSubscriber,
+      formationsAvailability,
+      formationSubscriber.paymentObject.customerEmail,
+      formationSubscriber.paymentObject.customerLastname,
+      formationSubscriber.paymentObject.customerFirstname,
+    );
+    return {
+      orderUUID: formationSubscriber.uuid,
+    };
+  }
+
+  async sendMailAfterBookingSuccess(
+    formation: Formations,
+    formationSubscriber: FormationsSubscribers,
+    availability: FormationsAvailabilities,
+    email,
+    lastname,
+    firstname,
+  ) {
+    // Generate invoice
+    const invoiceContent = PdfFormationModel.setFormationInvoiceModel(
+      formation,
+      formationSubscriber,
+      availability,
+    );
+
+    const localFilePath = `formation-invoices/${invoiceContent.uuid}.pdf`;
+    const remoteFilePath = `formations-invoices/${formationSubscriber.uuid}.pdf`;
+
+    await PdfFormationModel.generatePdf(invoiceContent, localFilePath);
+
+    const url = await FirebaseHelper.uploadFileToFirebase(
+      formationSubscriber,
+      availability,
+      localFilePath,
+      remoteFilePath,
+    );
+
+    // Send mail to maka-bane
+    await Sendinblue.sendEmailFromTemplate(
+      MailType.FORMATION_ORDER_SUCCESS_ADMIN,
+      {
+        email: 'huygens.benjamin@gmail.com',
+        name: `${invoiceContent.name}`,
+      },
+      url,
+      formationSubscriber.uuid,
+    );
+
+    // Send mail to maka-bane
+    /*await Sendinblue.sendEmailFromTemplate(
+      MailType.FORMATION_ORDER_SUCCESS_ADMIN,
+      {
+        email: 'makabane.reiki@gmail.com',
+        name: `${invoiceContent.name}`,
+      },
+      url,
+      formationSubscriber.uuid,
+    );
+
+     */
+
+    // Send mail to customer
+    await Sendinblue.sendEmailFromTemplate(
+      MailType.FORMATION_ORDER_SUCCESS,
+      {
+        email: email,
+        name: `${lastname} ${firstname}`,
+      },
+      url,
+      formationSubscriber.uuid,
+    );
   }
 }

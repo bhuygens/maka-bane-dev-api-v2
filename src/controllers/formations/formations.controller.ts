@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { FormationsService } from '../../services/formations/formations.service';
 import { CreateFormationDto } from '../../dto/formations/create-formation.dto';
 import { Formations } from '../../entities/formations/formations.entity';
@@ -61,7 +53,7 @@ export class FormationsController {
   @Post('/moveBookingToPaid')
   async moveBookingToPaid(
     @Body()
-    body: {
+      body: {
       paymentIntentId: string;
       numberPersons: number;
       formationAvailabilityId: number;
@@ -76,6 +68,13 @@ export class FormationsController {
   @Get('/subscribers')
   async getFormationsSubscribers() {
     return await this.formationsService.getFormationsSubscribers();
+  }
+
+  @Post('/updateAfterBancontactPayment')
+  async updateAfterBancontactPayment(
+    @Body() body: { intent: string; numberPersons: number },
+  ): Promise<{ orderUUID: string }> {
+    return await this.formationsService.updateAfterBancontactPayment(body);
   }
 
   @Delete(':id')

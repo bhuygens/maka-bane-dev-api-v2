@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Stripe from 'stripe';
 import ErrorManager from '../../../_shared/utils/ErrorManager';
+import { PaymentIntentModel } from '../../../interfaces/paymentIntent.model';
 
 @Injectable()
 export class StripeServiceHelper {
@@ -25,14 +26,19 @@ export class StripeServiceHelper {
     method = 'card',
   ): Promise<Stripe.PaymentIntent> {
     try {
-      const paymentIntentData = {
+      const paymentIntentData: PaymentIntentModel = {
         customer: stripeCustomerId,
         amount: amount,
         currency: 'eur',
         payment_method_types: [method],
       };
-
-      return await this.stripe.paymentIntents.create(paymentIntentData);
+      if (method === 'bancontact') {
+        paymentIntentData.payment_method_options = {
+          bancontact: { preferred_language: 'fr' },
+        };
+      }
+      const result = await this.stripe.paymentIntents.create(paymentIntentData);
+      return result;
     } catch (err) {
       ErrorManager.customException(err);
     }
