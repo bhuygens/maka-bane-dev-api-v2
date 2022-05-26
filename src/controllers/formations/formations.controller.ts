@@ -87,6 +87,11 @@ export class FormationsController {
     return this.formationsService.getFormationById(id);
   }
 
+  @Get('/dashboard/:id')
+  getFormationByIdForDashboard(@Param('id') id: number): Promise<Formations> {
+    return this.formationsService.getFormationByIdForDashboard(id);
+  }
+
   @Patch()
   async updateFormation(
     @Body() updateFormationDTO: UpdateFormationDto,

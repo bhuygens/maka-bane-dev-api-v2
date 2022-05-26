@@ -10,9 +10,7 @@ import { FormationsAvailabilities } from '../../entities/formations/formations-a
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
 import { v4 as uuidv4 } from 'uuid';
-import Sendinblue, {
-  MailType,
-} from '../../_shared/helpers/mailer/sendinblue.helper';
+import Sendinblue, { MailType } from '../../_shared/helpers/mailer/sendinblue.helper';
 import PdfFormationModel from '../../_shared/helpers/pdf/formation/pdf-formation-model';
 import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
 import { Places } from '../../entities/places/places.entity';
@@ -131,6 +129,21 @@ export class FormationsService {
     }
   }
 
+  async getFormationByIdForDashboard(id: number): Promise<Formations> {
+    const formation = await this.formationsRepository
+      .createQueryBuilder('formation')
+      .leftJoinAndSelect('formation.availabilities', 'fa')
+      .innerJoinAndMapOne('fa.place', Places, 'place2', 'fa.place = place2.id')
+      // .where('fa.date > :date', { date })
+      .andWhere('formation.id = :id', { id })
+      .getOne();
+    if (formation) {
+      return formation;
+    } else {
+      ErrorManager.notFoundException(`Formation ${id} not found`);
+    }
+  }
+
   async update(
     updateFormationDto: UpdateFormationDto,
   ): Promise<{ success: boolean; message: string }> {
@@ -242,13 +255,13 @@ export class FormationsService {
   }
 
   async moveBookingToPaid({
-    paymentIntentId,
-    numberPersons,
-    formationAvailabilityId,
-    lastname,
-    firstname,
-    email,
-  }) {
+                            paymentIntentId,
+                            numberPersons,
+                            formationAvailabilityId,
+                            lastname,
+                            firstname,
+                            email,
+                          }) {
     // Update formation subscription
     try {
       const formationSubscriber =
@@ -329,6 +342,7 @@ export class FormationsService {
       ErrorManager.customException(e);
     }
   }
+
   async updateAfterBancontactPayment(body): Promise<{ orderUUID: string }> {
     console.log('body', body);
     // Update formations subscribers
@@ -354,6 +368,8 @@ export class FormationsService {
     const formation = await this.formationsRepository.findOne(
       formationsAvailability.formationId,
     );
+    console.log('sub', formationSubscriber);
+
     await this.sendMailAfterBookingSuccess(
       formation,
       formationSubscriber,
