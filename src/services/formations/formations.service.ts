@@ -330,6 +330,7 @@ export class FormationsService {
     }
   }
   async updateAfterBancontactPayment(body): Promise<{ orderUUID: string }> {
+    console.log('body', body);
     // Update formations subscribers
     const formationSubscriber =
       await this.formationSubscribersRepository.findOne({
