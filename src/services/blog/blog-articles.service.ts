@@ -193,12 +193,42 @@ export class BlogArticlesService {
   }
 
   // DELETE ARTICLE
-  async deleteArticle(id: number): Promise<BlogArticle> {
+  async deleteArticle(id: number): Promise<{ success: boolean }> {
     const article = await this.blogArticlesRepository.findOne(id);
     if (article) {
-      return await this.blogArticlesRepository.remove(article);
+      await this.blogArticlesRepository.remove(article);
+      return {
+        success: true,
+      };
     } else {
       ErrorManager.notFoundException(`article ${id} not found`);
+    }
+  }
+
+  // DELETE ARTICLE
+  async searchArticles(
+    searchContent: string,
+  ): Promise<{ success: boolean; articles: BlogArticle[] }> {
+    const articles = await this.blogArticlesRepository
+      .createQueryBuilder('article')
+      .where('article.title like :blogTitle', {
+        blogTitle: `%${searchContent}%`,
+      })
+      .orWhere('article.content_header like :contentHeader', {
+        contentHeader: `%${searchContent}%`,
+      })
+      .getMany();
+
+    if (articles.length > 0) {
+      return {
+        articles,
+        success: true,
+      };
+    } else {
+      return {
+        success: false,
+        articles: null,
+      };
     }
   }
 }

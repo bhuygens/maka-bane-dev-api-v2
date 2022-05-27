@@ -32,6 +32,11 @@ export class BlogArticlesController {
     return this.blogArticlesService.getCategories();
   }
 
+  @Get('/search/:searchContent')
+  async searchArticles(@Param('searchContent') searchContent: string) {
+    return this.blogArticlesService.searchArticles(searchContent);
+  }
+
   @Get(':id')
   async getArticleById(@Param('id') id: string) {
     return this.blogArticlesService.getArticleById(+id);

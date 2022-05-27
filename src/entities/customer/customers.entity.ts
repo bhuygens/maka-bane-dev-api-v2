@@ -20,10 +20,10 @@ export class Customers {
   email: string;
 
   @Column('varchar', { name: 'last_name', nullable: true, length: 50 })
-  lastName: string;
+  lastname: string;
 
   @Column('varchar', { name: 'first_name', nullable: true, length: 50 })
-  firstName: string;
+  firstname: string;
 
   @Column('varchar', { name: 'phone', nullable: true, length: 15 })
   phone: string;
