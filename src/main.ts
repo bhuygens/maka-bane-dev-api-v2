@@ -21,7 +21,8 @@ async function bootstrap() {
 
   // Update request size for cares (for temp img base 64)
   app.use('/cares', json({ limit: '50mb' }));
-  app.use(json({ limit: '100kb' }));
+  app.use('/blog-articles', json({ limit: '50mb' }));
+  app.use(json({ limit: '20mb' }));
 
   app.enableCors();
 
