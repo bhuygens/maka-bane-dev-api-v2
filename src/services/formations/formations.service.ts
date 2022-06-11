@@ -115,7 +115,7 @@ export class FormationsService {
     const formation = await this.formationsRepository
       .createQueryBuilder('formation')
       .leftJoinAndSelect('formation.availabilities', 'fa')
-      .innerJoinAndMapOne('fa.place', Places, 'place2', 'fa.place = place2.id')
+      .leftJoinAndMapOne('fa.place', Places, 'place2', 'place2.id = fa.place')
       // .where('fa.date > :date', { date })
       .andWhere('formation.id = :id', { id })
       .getOne();
@@ -123,6 +123,7 @@ export class FormationsService {
       formation.availabilities = formation.availabilities.filter(
         (av) => av.date > date,
       );
+
       return formation;
     } else {
       ErrorManager.notFoundException(`Formation ${id} not found`);
