@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CommonService } from '../../services/common/common.service';
+import { GoogleAnalyticsDto } from '../../dto/_common/google-analytics.dto';
 
 @Controller('common')
 export class CommonController {
@@ -13,7 +14,7 @@ export class CommonController {
   }
 
   @Get('/home-data')
-  async fetchHomeData() {
-    return this.commonService.fetchHomeData();
+  async fetchHomeData(@Body() googleModel: GoogleAnalyticsDto) {
+    return this.commonService.fetchHomeData(googleModel);
   }
 }

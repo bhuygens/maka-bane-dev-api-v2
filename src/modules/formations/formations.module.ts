@@ -18,5 +18,13 @@ import { Places } from '../../entities/places/places.entity';
   ],
   providers: [FormationsService],
   controllers: [FormationsController],
+  exports: [
+    TypeOrmModule.forFeature([
+      Formations,
+      FormationsAvailabilities,
+      FormationsSubscribers,
+      Places,
+    ]),
+  ],
 })
 export class FormationsModule {}

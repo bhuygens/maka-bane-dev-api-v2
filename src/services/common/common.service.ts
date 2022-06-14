@@ -6,7 +6,17 @@ import {
 } from '../../_shared/helpers/mailer/mailer.helper';
 import ErrorManager from '../../_shared/utils/ErrorManager';
 
-const { google } = require('googleapis');
+import { google } from 'googleapis';
+import firebase from 'firebase';
+
+/**
+ * TODO(developer): Uncomment this variable and replace with your
+ *   Google Analytics 4 property ID before running the sample.
+ */
+import { BetaAnalyticsDataClient } from '@google-analytics/data';
+import { GoogleAnalyticsDto } from '../../dto/_common/google-analytics.dto';
+import { MetricsMode } from '../../enum/google-analytics/metrics-mode';
+import { DimensionMode } from '../../enum/google-analytics/dimension-mode';
 
 @Injectable()
 export class CommonService {
@@ -36,46 +46,77 @@ export class CommonService {
     };
   }
 
-  fetchHomeData() {
+  fetchHomeData(googleModel: GoogleAnalyticsDto) {
     try {
       // fetch main kpi
-      // fetch categories kpi
+      // TODO : connect to google analytics
+      this.isMetricsModeValid(googleModel.metricsMode);
+      this.isDimensionModeValid(googleModel.dimensionMode);
+
+      return this.getGoogleAnalyticsData(googleModel);
+
+      // fetch categories kpi ( cares / formation / sells )
       // fetch next event data
       // fetch annual review
-      return {
+
+      /*return {
         mainKpi: {},
         categoriesKpi: {},
         nextEvent: {},
         annualReview: {},
       };
+
+       */
     } catch (e) {
       ErrorManager.customException(e);
     }
   }
 
-  getGoogleAnalyticsData() {
-    const scopes = 'https://www.googleapis.com/auth/analytics.readonly';
-    const jwt = new google.Auth.JWT(
-      process.env.CLIENT_EMAIL,
-      null,
-      process.env.PRIVATE_KEY,
-      scopes,
-    );
-    const view_id = '3326850589';
+  getGoogleAnalyticsData(googleModel: GoogleAnalyticsDto) {
+    // Using a default constructor instructs the client to use the credentials
+    // specified in GOOGLE_APPLICATION_CREDENTIALS environment variable.
+    const analyticsDataClient = new BetaAnalyticsDataClient();
 
-    jwt.authorize((err, response) => {
-      google.analytics('v3').data.ga.get(
+    return analyticsDataClient.runReport({
+      property: `properties/${process.env.PROPERTY_ID}`,
+      dateRanges: [
         {
-          auth: jwt,
-          ids: 'ga:' + view_id,
-          'start-date': '30daysAgo',
-          'end-date': 'today',
-          metrics: 'ga:pageviews',
+          startDate: googleModel.startDate,
+          endDate: googleModel.endDate,
         },
-        (err, result) => {
-          console.log(err, result);
+      ],
+      dimensions: [
+        {
+          name: googleModel.dimensionMode,
         },
-      );
+      ],
+      metrics: [
+        {
+          name: googleModel.metricsMode,
+        },
+      ],
     });
+    /* console.log('Report result:');
+    response.rows.forEach((row) => {
+      console.log(row.dimensionValues[0], row.metricValues[0]);
+    });
+    */
+  }
+
+
+  isMetricsModeValid(metricsMode: string) {
+    if ((<any>Object).values(MetricsMode).includes(metricsMode)) {
+      return true;
+    } else {
+      throw ErrorManager.customException('Metrics mode does not exist');
+    }
+  }
+
+  isDimensionModeValid(dimensionMode: string) {
+    if ((<any>Object).values(DimensionMode).includes(dimensionMode)) {
+      return true;
+    } else {
+      throw ErrorManager.customException('Dimension mode does not exist');
+    }
   }
 }
