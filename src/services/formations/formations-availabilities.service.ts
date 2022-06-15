@@ -31,7 +31,7 @@ export class FormationsAvailabilitiesService {
         formationId: formation.id,
         hour: createFormationAvailabilityDto.hour,
       });
-      return await this.formationAvailabilitiesRepository.save(availability);
+      return this.formationAvailabilitiesRepository.save(availability);
     } else {
       ErrorManager.notFoundException(
         `Cares ${createFormationAvailabilityDto.formationId} not found !`,

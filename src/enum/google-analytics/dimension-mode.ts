@@ -10,4 +10,5 @@ export enum DimensionMode {
   REGION = 'region',
   WEEK = 'week',
   YEAR = 'year',
+  MONTH = 'month',
 }

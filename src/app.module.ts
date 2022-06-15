@@ -75,10 +75,11 @@ import { StripeController } from './controllers/stripe/stripe.controller';
 import { StripeService } from './services/stripe/stripe.service';
 import { CommonController } from './controllers/common/common.controller';
 import { CommonModule } from './modules/common/common.module';
-import { CommonService } from './services/common/common.service';
+import { CommonService } from './services/_common/common.service';
 import { CartController } from './controllers/cart/cart.controller';
 import { CartModule } from './modules/cart/cart.module';
 import { CartService } from './services/cart/cart.service';
+import { GoogleAnalyticsService } from './services/_common/google-analytics/google-analytics.service';
 
 @Module({
   imports: [
@@ -151,6 +152,7 @@ import { CartService } from './services/cart/cart.service';
     StripeServiceHelper,
     CommonService,
     CartService,
+    GoogleAnalyticsService,
   ],
   controllers: [
     FormationsAvailabilitiesController,
