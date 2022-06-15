@@ -80,6 +80,7 @@ import { CartController } from './controllers/cart/cart.controller';
 import { CartModule } from './modules/cart/cart.module';
 import { CartService } from './services/cart/cart.service';
 import { GoogleAnalyticsService } from './services/_common/google-analytics/google-analytics.service';
+import { ProductsService } from './services/products/products.service';
 
 @Module({
   imports: [
@@ -153,6 +154,7 @@ import { GoogleAnalyticsService } from './services/_common/google-analytics/goog
     CommonService,
     CartService,
     GoogleAnalyticsService,
+    ProductsService
   ],
   controllers: [
     FormationsAvailabilitiesController,

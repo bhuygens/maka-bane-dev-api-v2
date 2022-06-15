@@ -25,6 +25,7 @@ import { Places } from '../../entities/places/places.entity';
       FormationsSubscribers,
       Places,
     ]),
+    FormationsService,
   ],
 })
 export class FormationsModule {}

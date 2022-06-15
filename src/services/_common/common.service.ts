@@ -10,11 +10,25 @@ import { DimensionMode } from '../../enum/google-analytics/dimension-mode';
 import { Utils } from '../../_shared/utils/utils';
 import { GoogleAnalyticsService } from './google-analytics/google-analytics.service';
 import { FormationsSubscribersService } from '../formations/formations-subscribers.service';
+import { FormationsService } from '../formations/formations.service';
+import { FormationsAvailabilities } from '../../entities/formations/formations-availabilities.entity';
+import {
+  AnnualReviewModel,
+  FormationPaymentObjectModel,
+  NextEventTypeEnum,
+} from '../../interfaces/home/home-data.model';
+import { CustomerOrdersService } from '../customer/customer-orders.service';
+import { ProductsService } from '../products/products.service';
+import { CustomersService } from '../customer/customers.service';
 
 @Injectable()
 export class CommonService {
   constructor(
     private formationsSubscriberService: FormationsSubscribersService,
+    private formationsService: FormationsService,
+    private customerOrdersService: CustomerOrdersService,
+    private productsService: ProductsService,
+    private customerService: CustomersService,
   ) {}
 
   async sendMailFromContactPage({ name, email, message }) {
@@ -43,7 +57,7 @@ export class CommonService {
     };
   }
 
-  async fetchHomeData() {
+  async fetchHomeData(): Promise<FormationPaymentObjectModel> {
     try {
       // GET USERS PER DAY AND MONTH
       const userPerDay = await GoogleAnalyticsService.getGoogleAnalyticsData(
@@ -62,7 +76,6 @@ export class CommonService {
         await GoogleAnalyticsService.getGoogleAnalyticsData(
           this.getNewUserDayMonthParams('month'),
         );
-      // TODO: fetch orders to prepare
 
       // GET CATEGORIES KPI ( cares / formation / sells )
       // CARES
@@ -74,8 +87,16 @@ export class CommonService {
         await this.formationsSubscriberService.getFormationAvailabilitiesForThisMonth(
           Utils.formatDateUs(new Date(Date.now() - 86400000)),
         );
-      // fetch next event data
-      // fetch annual review
+
+      // FIND NEXT EVENT
+      const nearestFormationAvailability: FormationsAvailabilities[] =
+        await this.formationsService.getNearestFormation();
+      const formationContent = await this.formationsService.getFormationById(
+        nearestFormationAvailability[0].formationId,
+      );
+      formationContent.availabilities = formationContent.availabilities.filter(
+        (av) => av.id === nearestFormationAvailability[0].id,
+      );
 
       return {
         mainKpi: {
@@ -88,16 +109,21 @@ export class CommonService {
             day: formationsSubscribersForToday,
           },
           cares: {
-            month: 0,
             day: 0,
+            month: 0,
           },
-          sells: {
-            month: 0,
-            day: 0,
+          orders: {
+            toPrepare: 0,
+            sent: 0,
           },
         },
-        nextEvent: {},
-        annualReview: {},
+        nextEvent: {
+          title: formationContent.name,
+          date: nearestFormationAvailability[0].date,
+          type: NextEventTypeEnum.FORMATION,
+          participants: nearestFormationAvailability[0].subscribers.length,
+        },
+        annualReview: await this.getAnnualReviewData(),
       };
     } catch (e) {
       ErrorManager.customException(e);
@@ -107,40 +133,68 @@ export class CommonService {
   getUserDayMonthParam(type: string) {
     return type === 'day'
       ? {
-        startDate: Utils.formatDateUs(
-          new Date(Date.now() - 86400000), // get last day
-        ).toString(),
-        endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
-        dimensionMode: DimensionMode.DAY,
-        metricsMode: MetricsMode.TOTAL_USERS,
-      }
+          startDate: Utils.formatDateUs(
+            new Date(Date.now() - 86400000), // get last day
+          ).toString(),
+          endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
+          dimensionMode: DimensionMode.DAY,
+          metricsMode: MetricsMode.TOTAL_USERS,
+        }
       : {
-        startDate: Utils.formatDateUs(
-          new Date(Date.now() - 86400000 * 28), // get last 28 days
-        ).toString(),
-        endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
-        dimensionMode: DimensionMode.MONTH,
-        metricsMode: MetricsMode.TOTAL_USERS,
-      };
+          startDate: Utils.formatDateUs(
+            new Date(Date.now() - 86400000 * 28), // get last 28 days
+          ).toString(),
+          endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
+          dimensionMode: DimensionMode.MONTH,
+          metricsMode: MetricsMode.TOTAL_USERS,
+        };
   }
 
   getNewUserDayMonthParams(type: string) {
     return type === 'day'
       ? {
-        startDate: Utils.formatDateUs(
-          new Date(Date.now() - 86400000), // get last day
-        ).toString(),
-        endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
-        dimensionMode: DimensionMode.DAY,
-        metricsMode: MetricsMode.NEW_USERS,
-      }
+          startDate: Utils.formatDateUs(
+            new Date(Date.now() - 86400000), // get last day
+          ).toString(),
+          endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
+          dimensionMode: DimensionMode.DAY,
+          metricsMode: MetricsMode.NEW_USERS,
+        }
       : {
-        startDate: Utils.formatDateUs(
-          new Date(Date.now() - 86400000 * 28), // get last 28 days
-        ).toString(),
-        endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
-        dimensionMode: DimensionMode.MONTH,
-        metricsMode: MetricsMode.NEW_USERS,
-      };
+          startDate: Utils.formatDateUs(
+            new Date(Date.now() - 86400000 * 28), // get last 28 days
+          ).toString(),
+          endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
+          dimensionMode: DimensionMode.MONTH,
+          metricsMode: MetricsMode.NEW_USERS,
+        };
+  }
+
+  getYearlyVisitorsParams() {
+    return {
+      startDate: Utils.formatDateUs(
+        new Date(new Date().getFullYear(), 0, 1),
+      ).toString(),
+      endDate: Utils.formatDateUs(new Date(Date.now())).toString(),
+      dimensionMode: DimensionMode.YEAR,
+      metricsMode: MetricsMode.TOTAL_USERS,
+    };
+  }
+
+  async getAnnualReviewData(): Promise<AnnualReviewModel> {
+    // ANNUAL REVIEWS
+    const yearlyVisitors = await GoogleAnalyticsService.getGoogleAnalyticsData(
+      this.getYearlyVisitorsParams(),
+    );
+    return {
+      sells: await this.customerOrdersService.countOrders(),
+      products: await this.productsService.countProducts(),
+      income: 0,
+      clients: await this.customerService.countCustomers(),
+      caresPerformed: 0,
+      formationsPerformed:
+        await this.formationsSubscriberService.countSubscribers(),
+      yearlyVisitors: yearlyVisitors.value,
+    };
   }
 }

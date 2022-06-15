@@ -16,4 +16,8 @@ export class FormationsSubscribersService {
     });
     return formation.length;
   }
+
+  async countSubscribers(): Promise<number> {
+    return (await this.formationSubscribersRepository.find()).length;
+  }
 }

@@ -1,3 +1,5 @@
+import { MetricsMode } from '../../enum/google-analytics/metrics-mode';
+
 export interface FormationPaymentObjectModel {
   mainKpi: MainKpiModel;
   categoriesKpi: CategoriesKpiModel;
@@ -5,46 +7,44 @@ export interface FormationPaymentObjectModel {
   annualReview: AnnualReviewModel;
 }
 
-interface MainKpiModel {
-  monthlyVisitors: number;
-  ordersToPrepare: number;
-  monthlyNewClients: number;
+export interface MainKpiModel {
+  totalUsers: { day: number; month: number };
+  newUsers: { day: number; month: number };
 }
 
-interface CategoriesKpiModel {
+export interface CategoriesKpiModel {
   orders: {
     toPrepare: number;
     sent: number;
   };
   formations: {
-    monthlyClient: number;
-    annualClient: number;
+    month: number;
+    day: number;
   };
   cares: {
-    monthlyClient: number;
-    annualClient: number;
+    day: number;
+    month: number;
   };
 }
 
-interface NextEventModel {
+export interface NextEventModel {
   title: string;
-  date: string;
+  date: Date;
   type: NextEventTypeEnum;
   participants: number;
-  eventUrl: string;
 }
 
-interface AnnualReviewModel {
-  orders: number;
+export interface AnnualReviewModel {
+  sells: number;
   products: number;
   income: number;
   clients: number;
   caresPerformed: number;
   formationsPerformed: number;
+  yearlyVisitors: number;
 }
 
-
-enum NextEventTypeEnum {
+export enum NextEventTypeEnum {
   CARE = 'care',
   FORMATION = 'formation',
 }
