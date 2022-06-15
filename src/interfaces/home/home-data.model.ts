@@ -1,6 +1,4 @@
-import { MetricsMode } from '../../enum/google-analytics/metrics-mode';
-
-export interface FormationPaymentObjectModel {
+export interface HomeDataModel {
   mainKpi: MainKpiModel;
   categoriesKpi: CategoriesKpiModel;
   nextEvent: NextEventModel;
@@ -10,6 +8,7 @@ export interface FormationPaymentObjectModel {
 export interface MainKpiModel {
   totalUsers: { day: number; month: number };
   newUsers: { day: number; month: number };
+  orders: { toPrepare: number; total: number };
 }
 
 export interface CategoriesKpiModel {

@@ -14,7 +14,7 @@ import { FormationsService } from '../formations/formations.service';
 import { FormationsAvailabilities } from '../../entities/formations/formations-availabilities.entity';
 import {
   AnnualReviewModel,
-  FormationPaymentObjectModel,
+  HomeDataModel,
   NextEventTypeEnum,
 } from '../../interfaces/home/home-data.model';
 import { CustomerOrdersService } from '../customer/customer-orders.service';
@@ -57,7 +57,7 @@ export class CommonService {
     };
   }
 
-  async fetchHomeData(): Promise<FormationPaymentObjectModel> {
+  async fetchHomeData(): Promise<HomeDataModel> {
     try {
       // GET USERS PER DAY AND MONTH
       const userPerDay = await GoogleAnalyticsService.getGoogleAnalyticsData(
@@ -102,6 +102,7 @@ export class CommonService {
         mainKpi: {
           totalUsers: { day: userPerDay, month: userPerMonth },
           newUsers: { day: newUserPerDay, month: newUserPerMonth },
+          orders: {toPrepare: 0, total: 0},
         },
         categoriesKpi: {
           formations: {
