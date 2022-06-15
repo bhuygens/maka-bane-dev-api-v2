@@ -1,4 +1,5 @@
 import {
+  CacheModule,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -84,6 +85,7 @@ import { ProductsService } from './services/products/products.service';
 
 @Module({
   imports: [
+    CacheModule.register(),
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
@@ -154,7 +156,7 @@ import { ProductsService } from './services/products/products.service';
     CommonService,
     CartService,
     GoogleAnalyticsService,
-    ProductsService
+    ProductsService,
   ],
   controllers: [
     FormationsAvailabilitiesController,

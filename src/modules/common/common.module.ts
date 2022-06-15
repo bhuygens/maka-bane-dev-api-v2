@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { CommonController } from '../../controllers/common/common.controller';
 import { CommonService } from '../../services/_common/common.service';
 import { FormationsService } from '../../services/formations/formations.service';
@@ -12,7 +12,6 @@ import { CustomersService } from '../../services/customer/customers.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerOrders } from '../../entities/customer/customer-orders.entity';
 import { Products } from '../../entities/products/products.entity';
-import { ProductCategoriesService } from '../../services/products/product-categories.service';
 import { ProductCategories } from '../../entities/products/product-categories.entity';
 import { StripeServiceHelper } from '../../services/_common/stripe/stripe-service-helper.service';
 import { Customers } from '../../entities/customer/customers.entity';
@@ -21,6 +20,7 @@ import { ProductsModule } from '../products/products.module';
 
 @Module({
   imports: [
+    CacheModule.register(),
     FormationsModule,
     FormationsSubscribersModule,
     CustomerOrdersModule,

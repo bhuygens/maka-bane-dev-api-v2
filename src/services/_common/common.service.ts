@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
+
 import {
   createMailToSupportModel,
   sendEmail,
@@ -29,6 +31,7 @@ export class CommonService {
     private customerOrdersService: CustomerOrdersService,
     private productsService: ProductsService,
     private customerService: CustomersService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async sendMailFromContactPage({ name, email, message }) {
@@ -59,73 +62,86 @@ export class CommonService {
 
   async fetchHomeData(): Promise<HomeDataModel> {
     try {
-      // GET USERS PER DAY AND MONTH
-      const userPerDay = await GoogleAnalyticsService.getGoogleAnalyticsData(
-        this.getUserDayMonthParam('day'),
-      );
-      const userPerMonth = await GoogleAnalyticsService.getGoogleAnalyticsData(
-        this.getUserDayMonthParam('month'),
-      );
-
-      // GET NEW CLIENTS PER DAY AND MONTH
-      const newUserPerDay = await GoogleAnalyticsService.getGoogleAnalyticsData(
-        this.getNewUserDayMonthParams('day'),
-      );
-
-      const newUserPerMonth =
-        await GoogleAnalyticsService.getGoogleAnalyticsData(
-          this.getNewUserDayMonthParams('month'),
+      if (await this.cacheManager.get('dashboard_homePage')) {
+        return this.cacheManager.get('dashboard_homePage');
+      } else {
+        // GET USERS PER DAY AND MONTH
+        const userPerDay = await GoogleAnalyticsService.getGoogleAnalyticsData(
+          this.getUserDayMonthParam('day'),
         );
+        const userPerMonth =
+          await GoogleAnalyticsService.getGoogleAnalyticsData(
+            this.getUserDayMonthParam('month'),
+          );
 
-      // GET CATEGORIES KPI ( cares / formation / sells )
-      // CARES
-      const formationsSubscribersForThisMonth =
-        await this.formationsSubscriberService.getFormationAvailabilitiesForThisMonth(
-          Utils.formatDateUs(new Date(Date.now() - 86400000 * 28)),
+        // GET NEW CLIENTS PER DAY AND MONTH
+        const newUserPerDay =
+          await GoogleAnalyticsService.getGoogleAnalyticsData(
+            this.getNewUserDayMonthParams('day'),
+          );
+
+        const newUserPerMonth =
+          await GoogleAnalyticsService.getGoogleAnalyticsData(
+            this.getNewUserDayMonthParams('month'),
+          );
+
+        // GET CATEGORIES KPI ( cares / formation / sells )
+        // CARES
+        const formationsSubscribersForThisMonth =
+          await this.formationsSubscriberService.getFormationAvailabilitiesForThisMonth(
+            Utils.formatDateUs(new Date(Date.now() - 86400000 * 28)),
+          );
+        const formationsSubscribersForToday =
+          await this.formationsSubscriberService.getFormationAvailabilitiesForThisMonth(
+            Utils.formatDateUs(new Date(Date.now() - 86400000)),
+          );
+
+        // FIND NEXT EVENT
+        const nearestFormationAvailability: FormationsAvailabilities[] =
+          await this.formationsService.getNearestFormation();
+        const formationContent = await this.formationsService.getFormationById(
+          nearestFormationAvailability[0].formationId,
         );
-      const formationsSubscribersForToday =
-        await this.formationsSubscriberService.getFormationAvailabilitiesForThisMonth(
-          Utils.formatDateUs(new Date(Date.now() - 86400000)),
-        );
+        formationContent.availabilities =
+          formationContent.availabilities.filter(
+            (av) => av.id === nearestFormationAvailability[0].id,
+          );
 
-      // FIND NEXT EVENT
-      const nearestFormationAvailability: FormationsAvailabilities[] =
-        await this.formationsService.getNearestFormation();
-      const formationContent = await this.formationsService.getFormationById(
-        nearestFormationAvailability[0].formationId,
-      );
-      formationContent.availabilities = formationContent.availabilities.filter(
-        (av) => av.id === nearestFormationAvailability[0].id,
-      );
+        const returnedValue = {
+          mainKpi: {
+            totalUsers: { day: userPerDay, month: userPerMonth },
+            newUsers: { day: newUserPerDay, month: newUserPerMonth },
+            orders: { toPrepare: 0, total: 0 },
+          },
+          categoriesKpi: {
+            formations: {
+              month: formationsSubscribersForThisMonth,
+              day: formationsSubscribersForToday,
+            },
+            cares: {
+              day: 0,
+              month: 0,
+            },
+            orders: {
+              toPrepare: 0,
+              sent: 0,
+            },
+          },
+          nextEvent: {
+            title: formationContent.name,
+            date: nearestFormationAvailability[0].date,
+            type: NextEventTypeEnum.FORMATION,
+            participants: nearestFormationAvailability[0].subscribers.length,
+          },
+          annualReview: await this.getAnnualReviewData(),
+        };
 
-      return {
-        mainKpi: {
-          totalUsers: { day: userPerDay, month: userPerMonth },
-          newUsers: { day: newUserPerDay, month: newUserPerMonth },
-          orders: {toPrepare: 0, total: 0},
-        },
-        categoriesKpi: {
-          formations: {
-            month: formationsSubscribersForThisMonth,
-            day: formationsSubscribersForToday,
-          },
-          cares: {
-            day: 0,
-            month: 0,
-          },
-          orders: {
-            toPrepare: 0,
-            sent: 0,
-          },
-        },
-        nextEvent: {
-          title: formationContent.name,
-          date: nearestFormationAvailability[0].date,
-          type: NextEventTypeEnum.FORMATION,
-          participants: nearestFormationAvailability[0].subscribers.length,
-        },
-        annualReview: await this.getAnnualReviewData(),
-      };
+        await this.cacheManager.set('dashboard_homePage', returnedValue, {
+          ttl: 3600, // ttl: 1h,
+        });
+        console.log(this.cacheManager.get('dashboard_homePage'));
+        return returnedValue;
+      }
     } catch (e) {
       ErrorManager.customException(e);
     }
