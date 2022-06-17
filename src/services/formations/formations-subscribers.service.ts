@@ -8,7 +8,7 @@ export class FormationsSubscribersService {
   @InjectRepository(FormationsSubscribers)
   private readonly formationSubscribersRepository: Repository<FormationsSubscribers>;
 
-  async getFormationAvailabilitiesForThisMonth(startDate: string) {
+  async getFormationsSubscriptionForThisMonth(startDate: string) {
     const formation = await this.formationSubscribersRepository.find({
       where: {
         depositDate: MoreThan(startDate),

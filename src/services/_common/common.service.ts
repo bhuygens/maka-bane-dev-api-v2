@@ -88,11 +88,11 @@ export class CommonService {
         // GET CATEGORIES KPI ( cares / formation / sells )
         // CARES
         const formationsSubscribersForThisMonth =
-          await this.formationsSubscriberService.getFormationAvailabilitiesForThisMonth(
+          await this.formationsSubscriberService.getFormationsSubscriptionForThisMonth(
             Utils.formatDateUs(new Date(Date.now() - 86400000 * 28)),
           );
         const formationsSubscribersForToday =
-          await this.formationsSubscriberService.getFormationAvailabilitiesForThisMonth(
+          await this.formationsSubscriberService.getFormationsSubscriptionForThisMonth(
             Utils.formatDateUs(new Date(Date.now() - 86400000)),
           );
 
@@ -139,7 +139,6 @@ export class CommonService {
         await this.cacheManager.set('dashboard_homePage', returnedValue, {
           ttl: 3600, // ttl: 1h,
         });
-        console.log(this.cacheManager.get('dashboard_homePage'));
         return returnedValue;
       }
     } catch (e) {
