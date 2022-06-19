@@ -163,7 +163,6 @@ export class BlogArticlesService {
 
   // UPDATE ARTICLE CONTENT
   async updateArticle(articleContent: UpdateArticleDto): Promise<BlogArticle> {
-    console.log(articleContent);
     const article = await this.blogArticlesRepository.preload({
       id: +articleContent.id,
       ...articleContent,
@@ -185,7 +184,6 @@ export class BlogArticlesService {
       if (uploadedImages.length > 0) {
         article.imagesUrl.push(...uploadedImages);
       }
-      console.log(article);
       return this.blogArticlesRepository.save(article);
     } else {
       ErrorManager.notFoundException(`article ${articleContent.id} not found`);

@@ -259,4 +259,8 @@ export class CustomersService {
       };
     }
   }
+
+  async countCustomers(): Promise<number> {
+    return (await this.customersRepository.find()).length;
+  }
 }

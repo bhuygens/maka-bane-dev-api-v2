@@ -21,3 +21,11 @@ import { Newsletter } from '../../entities/newsletter/newsletter.entity';
   providers: [CustomersService, StripeServiceHelper],
 })
 export class CustomersModule {}
+
+
+/*
+  imports: [TypeOrmModule.forFeature([CustomerOrders])],
+  providers: [CustomerOrdersService],
+  controllers: [CustomerOrdersController],
+  exports: [CustomerOrdersModule],
+ */

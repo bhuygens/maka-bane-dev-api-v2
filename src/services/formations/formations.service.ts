@@ -10,7 +10,9 @@ import { FormationsAvailabilities } from '../../entities/formations/formations-a
 import { FormationsSubscribers } from '../../entities/formations/formations-subscribers.entity';
 import { FormationPreBookingDto } from '../../dto/formations/formation-pre-booking.dto';
 import { v4 as uuidv4 } from 'uuid';
-import Sendinblue, { MailType } from '../../_shared/helpers/mailer/sendinblue.helper';
+import Sendinblue, {
+  MailType,
+} from '../../_shared/helpers/mailer/sendinblue.helper';
 import PdfFormationModel from '../../_shared/helpers/pdf/formation/pdf-formation-model';
 import { FirebaseHelper } from '../../_shared/helpers/firebase.helper';
 import { Places } from '../../entities/places/places.entity';
@@ -31,21 +33,12 @@ export class FormationsService {
     private readonly placesRepository: Repository<Places>,
   ) {}
 
-  async getAllFormations(): Promise<Formations[]> {
-    return await this.formationsRepository.find({});
+  getAllFormations(): Promise<Formations[]> {
+    return this.formationsRepository.find({});
   }
 
   async getDashboardContent(): Promise<FormationDashboardModel> {
-    const nearestFormation = await this.formationsAvailabilitiesRepository.find(
-      {
-        where: {
-          date: MoreThan(new Date()),
-        },
-        skip: 0,
-        take: 1,
-        order: { date: 'ASC' },
-      },
-    );
+    const nearestFormation = await this.getNearestFormation();
     const nearestFormationContent = await this.formationsRepository.findOne(
       nearestFormation[0].formationId,
     );
@@ -108,6 +101,19 @@ export class FormationsService {
     } else {
       ErrorManager.notFoundException(`Formation ${id} not found !`);
     }
+  }
+
+  async getNearestFormation() {
+    const formationsAvailability =
+      await this.formationsAvailabilitiesRepository.find({
+        where: {
+          date: MoreThan(new Date()),
+        },
+        skip: 0,
+        take: 1,
+        order: { date: 'ASC' },
+      });
+    return formationsAvailability;
   }
 
   async getFormationById(id: number): Promise<Formations> {
@@ -256,13 +262,13 @@ export class FormationsService {
   }
 
   async moveBookingToPaid({
-                            paymentIntentId,
-                            numberPersons,
-                            formationAvailabilityId,
-                            lastname,
-                            firstname,
-                            email,
-                          }) {
+    paymentIntentId,
+    numberPersons,
+    formationAvailabilityId,
+    lastname,
+    firstname,
+    email,
+  }) {
     // Update formation subscription
     try {
       const formationSubscriber =
@@ -345,7 +351,6 @@ export class FormationsService {
   }
 
   async updateAfterBancontactPayment(body): Promise<{ orderUUID: string }> {
-    console.log('body', body);
     // Update formations subscribers
     const formationSubscriber =
       await this.formationSubscribersRepository.findOne({
@@ -369,7 +374,6 @@ export class FormationsService {
     const formation = await this.formationsRepository.findOne(
       formationsAvailability.formationId,
     );
-    console.log('sub', formationSubscriber);
 
     await this.sendMailAfterBookingSuccess(
       formation,

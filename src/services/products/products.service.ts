@@ -159,4 +159,8 @@ export class ProductsService {
       }
     }
   }
+
+  async countProducts(): Promise<number> {
+    return (await this.productsRepository.find()).length;
+  }
 }

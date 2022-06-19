@@ -1,14 +1,20 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { CommonService } from '../../services/common/common.service';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CommonService } from '../../services/_common/common.service';
+import { GoogleAnalyticsDto } from '../../dto/_common/google-analytics.dto';
 
 @Controller('common')
 export class CommonController {
   constructor(private readonly commonService: CommonService) {}
 
   @Post('/sendMailFromContactPage')
-  async sendMailFromContactPage(
+  sendMailFromContactPage(
     @Body() body: { message: string; name: string; email: string },
   ) {
-    return await this.commonService.sendMailFromContactPage(body);
+    return this.commonService.sendMailFromContactPage(body);
+  }
+
+  @Get('/home-data')
+  async fetchHomeData() {
+    return this.commonService.fetchHomeData();
   }
 }
