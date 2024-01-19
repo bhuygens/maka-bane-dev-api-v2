@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "maka-bane-dev",
+  "private_key_id": "da28fd34007fc8bbeea676541fe8e27d30de7e33",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDQMLZzYWWbTG+u\nfrA+S8VGwrob3P7MCXQY8vFBqloc8n8pBG3X37aGKHW9yYd7Tmo3wLbeItZ4V2zJ\nDw5OpG8GReG1wj67nCzGNQKr/JFZGMyHZ6k1AABQLy5t1y8Bbdn6H9tKrgxND/W6\n+zSg4Qxn4tlaS/hGSEAgstAb2GNIMov9S2BWOQt9Ua2WODZuVkgEJ7CVQHAm5soz\nE2js+/VVmWtGRF0TD/Kv+N3cge4kBUXjJKhLng6rqASE0WNortqiAgiaL2Dgd8LW\noxWerGviIbqF49lN+jWdSONe3Z44i+wXi9Eu+2Fe1XGpCmpO09sS6kSPTX+DgtnF\nHiQoCM8PAgMBAAECggEACRzAt58hN+FqF/yikS921IiMZdDP9DVLuBXWGnYu2IqC\np1RyzFqV3hxiPurVu79sZcFRH7rtoTnOYKSAj0+iLmebn/1/Cm4lBY3nboixAfHU\nbe7LGK9F1DykbxlWjNz2h/yh+AxTLIJQ0pzRKmN/TALBWbLujID4EZZSBo37lnrP\nnOvzL6Jt05NL7QD6Wnbw3uqX8Ctx21ewK8L6sdda9cqD4rKRZpCMGfRVQ2/qUkw5\nJbIfhAQaifKyNkwbC37NtyRQSojRtbj67VSoP4/xzrX6RxYWNjGv045e0FzeCZTm\nUUnKtN8LLTpJExkqNwvV0XzC/Rme3bZAIQDlxhm8DQKBgQD8M2+wMTQOazR7gikK\nPJCP7YFSo8Wj4G2AM/E77qHtyiqxdMK0J7k6G2Prb3SoGqy6Z2J/VcZ1Wwu/Tq1Y\nyxkj1eKWy2lOcg97RjZMrCfGp7hZvRaH0xYP659pODIy5GJ6S2Z309Tym8xBRa0i\nWi7Ni7pMMBWf8Pg9ZU/txskKXQKBgQDTU47Wmg3qpCcld8ynLfQB6DNum9CPbdOx\neyBZodgyAyhAP1OwlSHq6iEWUrVjd+qwWVSMRyJK0a7GQr2aHOgc/O/42W299Pjj\nW86uEJ8Hbb8wOrDpZR/ZuX9/tURwa5gpiWF0yM9qDWFs85A2T5THFbR0+Hy6o8zM\n5qcZJvigWwKBgC/BpbKdfpgEYOnKWe8gTNeUR9rYPEKt6s5OB64rn+ohUDhOPdhT\ndVW1fhRFBLgYZQDfNt2Z5nyuguj1Awo/W0FX7RJU7ln2a0wSnZGjP9z0QYpsremG\nZTUajxMjmw3cBXHW+U5ThI10RxdNFF3e6eHuRZbLvCyPOtKVbq895y/ZAoGAWete\nBfZ7IXJDre+xxxkIkJ8q80+diMokn4pSk5EIGw+42s2XYLW0Pu7ssUD0KaTm2a7J\nCP9jmg5qnbXcU20lXuBJg8uQpJlOJf/0i6BK6rBJ/82ZZVZAHTaPB9oriuJdVp88\nNqMTjn6vC9r/a/ykw6l6paLt/8Se6jjitRMeC60CgYBHQpfvxnwrABAwzffgX4Y2\n0u8ZLu98Php3k6P0tYr3PVcpZhP92dLLuMsGLlhDUuqqud8ef0/9OODCmAvFTs10\neHPAZtFzpTUpbMrVCiSQaNOVaNSeoyNPJRyAy7Y1nRs/zXVWQ3Ge6wtCyEPtCiFn\ns4IHCOv6utmVnzL9bz/sRA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "analytics-account@maka-bane-dev.iam.gserviceaccount.com",
+  "client_id": "118068240985289092612",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/analytics-account%40maka-bane-dev.iam.gserviceaccount.com"
+}
